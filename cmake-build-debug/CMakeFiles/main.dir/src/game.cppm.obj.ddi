@@ -1,0 +1,27 @@
+{
+  "revision": 0,
+  "rules": [
+    {
+      "primary-output": "CMakeFiles\\main.dir\\src\\game.cppm.obj",
+      "provides": [
+        {
+          "is-interface": true,
+          "logical-name": "Game",
+          "source-path": "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/src/game.cppm"
+        }
+      ],
+      "requires": [
+        {
+          "logical-name": "Player"
+        },
+        {
+          "logical-name": "Projectile"
+        },
+        {
+          "logical-name": "Enemy"
+        }
+      ]
+    }
+  ],
+  "version": 1
+}

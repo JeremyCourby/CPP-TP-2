@@ -1,0 +1,16 @@
+{
+  "revision": 0,
+  "rules": [
+    {
+      "primary-output": "CMakeFiles\\main.dir\\src\\player.cpp.obj",
+      "provides": [
+        {
+          "is-interface": true,
+          "logical-name": "player",
+          "source-path": "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/src/player.cpp"
+        }
+      ]
+    }
+  ],
+  "version": 1
+}
