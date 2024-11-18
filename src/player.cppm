@@ -1,62 +1,48 @@
-// //
-// // Created by jerem on 14/11/2024.
-// //
-// #include <SFML/Graphics.hpp>
-// #include <iostream>
-//
-// module;
-//
-// export module player;
-//
-// export namespace player {
-//
-//     class Player {
-//     public:
-//         sf::Sprite sprite;
-//         sf::Texture texture;
-//         float speed = 300.0f;
-//
-//         Player() {
-//             if (!texture.loadFromFile("assets/player.png")) {
-//                 std::cerr << "Erreur lors du chargement de la texture du vaisseau.\n";
-//             }
-//             sprite.setTexture(texture);
-//             sprite.setPosition(400.0f, 500.0f);
-//         }
-//
-//         void update(float deltaTime) {
-//             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && sprite.getPosition().x > 0)
-//                 sprite.move(-speed * deltaTime, 0);
-//             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && sprite.getPosition().x < 800 - sprite.getGlobalBounds().width)
-//                 sprite.move(speed * deltaTime, 0);
-//         }
-//     };
-//
-// }
+module;
+#include  <SFML/Graphics.hpp>
+#include  <iostream>
+
+using namespace sf;
+using namespace std;
 
 export module Player;
 
-import <SFML/Graphics.hpp>;
-import <iostream>;
-
 export class Player {
 public:
-    sf::Sprite sprite;
-    sf::Texture texture;
-    float speed = 300.0f;
+    Sprite sprite;
+    Texture texture;
+    float speed{400.0f};
+    int lives{3};
 
-    Player() {
-        if (!texture.loadFromFile("assets/player.png")) {
-            std::cerr << "Erreur lors du chargement de la texture du vaisseau.\n";
+    Player() = default;
+
+    explicit Player(auto lives):lives{lives} {
+        if (!texture.loadFromFile("src/assets/player.png")) {
+            cerr << "Erreur lors du chargement de la texture du vaisseau.\n";
         }
         sprite.setTexture(texture);
-        sprite.setPosition(400.0f, 500.0f);
+        sprite.setPosition((1920 - sprite.getGlobalBounds().width) / 2, 900);
+        sprite.scale(4.0f, 4.0f);
     }
 
     void update(float deltaTime) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && sprite.getPosition().x > 0)
+        if (Keyboard::isKeyPressed(Keyboard::Left) && sprite.getPosition().x > 0)
             sprite.move(-speed * deltaTime, 0);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && sprite.getPosition().x < 800 - sprite.getGlobalBounds().width)
+        if (Keyboard::isKeyPressed(Keyboard::Right) && sprite.getPosition().x < 1920 - sprite.getGlobalBounds().width)
             sprite.move(speed * deltaTime, 0);
+        if (Keyboard::isKeyPressed(Keyboard::Q) && sprite.getPosition().x > 0)
+            sprite.move(-speed * deltaTime, 0);
+        if (Keyboard::isKeyPressed(Keyboard::D) && sprite.getPosition().x < 1920 - sprite.getGlobalBounds().width)
+            sprite.move(speed * deltaTime, 0);
+    }
+
+    void loseLife() {
+        if (lives > 0) {
+            lives--;
+        }
+    }
+
+    bool isAlive() const {
+        return lives > 0;
     }
 };
