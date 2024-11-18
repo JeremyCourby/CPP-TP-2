@@ -15,12 +15,12 @@ using namespace std;
 export class Game {
 public:
     RenderWindow window;
-    Player player = Player(3);
+    unique_ptr<Player> player = make_unique<Player>(3);
     vector<Projectile> projectiles;
     vector<Enemy> enemies;
 
     Clock shootClock;
-    float shootInterval = 0.1f;
+    float shootInterval = 0.4f;
     shared_ptr<Texture> projectileTexture;
 
     Clock enemySpawnClock;
@@ -41,6 +41,8 @@ public:
     Text pauseText{"Pause", font, 300};
     Text resumeButton{"Reprendre", font, 50};
     Text closeButton{"Quitter", font, 50};
+
+    Text scoreText{"Score : ", font, 30};
 
     Game() : window(VideoMode(1920, 1080), "Invasion", Style::Fullscreen), projectileTexture{make_shared<Texture>()}, enemyTexture{make_shared<Texture>()} {
         window.setFramerateLimit(144);
@@ -88,24 +90,45 @@ public:
         closeButton.setFillColor(Color::White);
         closeButton.setPosition(860, 600);
 
+        scoreText.setFillColor(Color::White);
+        scoreText.setPosition(1600, 10);
     }
 
     void run() {
+
         showMenu();
 
         Clock clock;
-        while (window.isOpen() && player.isAlive()) {
+        while (window.isOpen()) {
             float deltaTime = clock.restart().asSeconds();
             processEvents();
 
-            if (!isPaused) {
+            if (!isPaused && player->isAlive()) {
                 update(deltaTime);
+            }
+
+            if (!player->isAlive()) {
+                showGameOver();
+                resetGame(); // Ajoutez cette ligne pour relancer le jeu après le menu Game Over
+                continue; // Retourne à la boucle pour recommencer le jeu
             }
 
             render();
         }
+    }
 
-        showGameOver();
+    void resetGame() {
+
+        player = std::make_unique<Player>(3);
+
+        projectiles.clear();
+        enemies.clear();
+
+        shootClock.restart();
+        enemySpawnClock.restart();
+
+        // Remettre le jeu en mode "non-pausé"
+        isPaused = false;
     }
 
     void showMenu() {
@@ -195,6 +218,7 @@ public:
                 if (event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left) {
                     Vector2i mousePos = Mouse::getPosition(window);
                     if (replayButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+                        resetGame();
                         return;
                     }
 
@@ -234,13 +258,6 @@ private:
         while (window.pollEvent(event)) {
             if (event.type == Event::Closed) {
                 window.close();
-            }
-
-            if (!isPaused) {
-                if (Keyboard::isKeyPressed(Keyboard::Space) && shootClock.getElapsedTime().asSeconds() >= shootInterval) {
-                    projectiles.emplace_back(projectileTexture, player.sprite.getPosition().x + player.sprite.getGlobalBounds().width / 2, player.sprite.getPosition().y);
-                    shootClock.restart();
-                }
             }
 
             if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape) {
@@ -290,7 +307,15 @@ private:
     }
 
     void update(float deltaTime) {
-        player.update(deltaTime);
+        player->update(deltaTime);
+        scoreText.setString(format("Score : {}", player->getScore()));
+
+        if (!isPaused) {
+            if (Keyboard::isKeyPressed(Keyboard::Space) && shootClock.getElapsedTime().asSeconds() >= shootInterval) {
+                projectiles.emplace_back(projectileTexture, player->sprite.getPosition().x + player->sprite.getGlobalBounds().width / 2, player->sprite.getPosition().y);
+                shootClock.restart();
+            }
+        }
 
         for (auto& proj : projectiles) {
             proj.update(deltaTime);
@@ -316,20 +341,14 @@ private:
         for (auto it = enemies.begin(); it != enemies.end(); ) {
             it->update(deltaTime);
 
-            // Vérification si un ennemi est sorti par le bas ou par les côtés de l'écran
             if (it->sprite.getPosition().y > window.getSize().y ||
                 it->sprite.getPosition().x < 0 ||
                 it->sprite.getPosition().x > window.getSize().x) {
 
-                player.loseLife();
+                player->loseLife();
 
                 it = enemies.erase(it);
 
-                if (!player.isAlive()) {
-                    std::cout << "Game Over!\n";
-                    //  window.close();
-                    // return;
-                }
             } else {
                 ++it;
             }
@@ -342,6 +361,7 @@ private:
                     it = projectiles.erase(it);
                     et = enemies.erase(et);
                     hit = true;
+                    player->addScore(100);
                     break;
                 } else {
                     ++et;
@@ -354,10 +374,12 @@ private:
     }
 
     void render() {
+        window.setMouseCursor(defaultCursor);
+
         window.clear();
 
         window.draw(backgroundSprite);
-        window.draw(player.sprite);
+        window.draw(player->sprite);
 
         for (const auto& proj : projectiles) {
             window.draw(proj.sprite);
@@ -367,7 +389,7 @@ private:
             window.draw(enemy.sprite);
         }
 
-        for (int i = 0; i < player.lives; ++i) {
+        for (int i = 0; i < player->lives; ++i) {
             Sprite lifeSprite;
             lifeSprite.setTexture(lifeTexture);
             lifeSprite.setPosition(10 + i * (lifeTexture.getSize().x + 50), 10);
@@ -375,9 +397,10 @@ private:
             window.draw(lifeSprite);
         }
 
-        // Afficher l'écran de pause si le jeu est en pause
+        window.draw(scoreText);
+
         if (isPaused) {
-            showPause(); // Nouvelle fonction pour afficher l'overlay de pause
+            showPause();
         }
 
         window.display();

@@ -13,13 +13,13 @@ public:
     Texture texture;
     float speed{400.0f};
     int lives{3};
-
-    Player() = default;
+    int score{0};
 
     explicit Player(auto lives):lives{lives} {
         if (!texture.loadFromFile("src/assets/player.png")) {
             cerr << "Erreur lors du chargement de la texture du vaisseau.\n";
         }
+
         sprite.setTexture(texture);
         sprite.setPosition((1920 - sprite.getGlobalBounds().width) / 2, 900);
         sprite.scale(4.0f, 4.0f);
@@ -41,6 +41,14 @@ public:
             lives--;
         }
     }
+
+    int addScore(auto score) {
+        this->score += score;
+        return this->score;
+    }
+
+    int getScore() { return score; }
+    int setScore(auto score) { this->score = score; }
 
     bool isAlive() const {
         return lives > 0;
