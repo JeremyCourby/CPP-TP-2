@@ -22,15 +22,18 @@ set(PROJECT_FILES
         src/projectile.cppm
         src/enemy.cppm
         src/game.cppm
+        src/explosion.cppm
 )
-add_executable(main src/main.cpp)
+add_executable(main src/main.cpp
+        src/explosion.cppm
+)
 target_sources(main
         PUBLIC
         FILE_SET CXX_MODULES
         FILES
         ${PROJECT_FILES}
 )
-target_link_libraries(main PRIVATE sfml-graphics)
+target_link_libraries(main PRIVATE sfml-graphics sfml-audio)
 target_compile_features(main PRIVATE cxx_std_23)
 
 if(WIN32)

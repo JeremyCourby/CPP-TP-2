@@ -47,7 +47,7 @@ cmake_ninja_workdir = C$:/Users/jerem/Desktop/C++/Projet$ C++/CPP-TP-2/cmake-bui
 #############################################
 # Order-only phony target for main
 
-build cmake_object_order_depends_target_main: phony || cmake_object_order_depends_target_sfml-graphics cmake_object_order_depends_target_sfml-system cmake_object_order_depends_target_sfml-window
+build cmake_object_order_depends_target_main: phony || cmake_object_order_depends_target_sfml-audio cmake_object_order_depends_target_sfml-graphics cmake_object_order_depends_target_sfml-system cmake_object_order_depends_target_sfml-window
 
 build CMakeFiles/main.dir/src/main.cpp.obj.ddi: CXX_SCAN__main_Debug C$:/Users/jerem/Desktop/C++/Projet$ C++/CPP-TP-2/src/main.cpp || cmake_object_order_depends_target_main
   DEFINES = -DSFML_STATIC
@@ -62,6 +62,25 @@ build CMakeFiles/main.dir/src/main.cpp.obj: CXX_COMPILER__main_scanned_Debug C$:
   DEFINES = -DSFML_STATIC
   DEP_FILE = CMakeFiles\main.dir\src\main.cpp.obj.d
   DYNDEP_MODULE_MAP_FILE = CMakeFiles\main.dir\src\main.cpp.obj.modmap
+  FLAGS = -g -std=gnu++23 -fansi-escape-codes -fcolor-diagnostics
+  INCLUDES = -isystem "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include"
+  OBJECT_DIR = CMakeFiles\main.dir
+  OBJECT_FILE_DIR = CMakeFiles\main.dir\src
+  dyndep = CMakeFiles/main.dir/CXX.dd
+
+build CMakeFiles/main.dir/src/explosion.cppm.obj.ddi: CXX_SCAN__main_Debug C$:/Users/jerem/Desktop/C++/Projet$ C++/CPP-TP-2/src/explosion.cppm || cmake_object_order_depends_target_main
+  DEFINES = -DSFML_STATIC
+  DEP_FILE = CMakeFiles\main.dir\src\explosion.cppm.obj.ddi.d
+  DYNDEP_INTERMEDIATE_FILE = CMakeFiles\main.dir\src\explosion.cppm.obj.ddi
+  FLAGS = -g -std=gnu++23 -fansi-escape-codes -fcolor-diagnostics
+  INCLUDES = -isystem "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include"
+  OBJ_FILE = CMakeFiles\main.dir\src\explosion.cppm.obj
+  PREPROCESSED_OUTPUT_FILE = CMakeFiles\main.dir\src\explosion.cppm.obj.ddi.i
+
+build CMakeFiles/main.dir/src/explosion.cppm.obj: CXX_COMPILER__main_scanned_Debug C$:/Users/jerem/Desktop/C++/Projet$ C++/CPP-TP-2/src/explosion.cppm | CMakeFiles/main.dir/src/explosion.cppm.obj.modmap || cmake_object_order_depends_target_main CMakeFiles/main.dir/CXX.dd
+  DEFINES = -DSFML_STATIC
+  DEP_FILE = CMakeFiles\main.dir\src\explosion.cppm.obj.d
+  DYNDEP_MODULE_MAP_FILE = CMakeFiles\main.dir\src\explosion.cppm.obj.modmap
   FLAGS = -g -std=gnu++23 -fansi-escape-codes -fcolor-diagnostics
   INCLUDES = -isystem "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include"
   OBJECT_DIR = CMakeFiles\main.dir
@@ -144,7 +163,7 @@ build CMakeFiles/main.dir/src/game.cppm.obj: CXX_COMPILER__main_scanned_Debug C$
   OBJECT_FILE_DIR = CMakeFiles\main.dir\src
   dyndep = CMakeFiles/main.dir/CXX.dd
 
-build CMakeFiles/main.dir/CXX.dd | C$:/Users/jerem/Desktop/C++/Projet$ C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/CXXModules.json CMakeFiles/main.dir/src/main.cpp.obj.modmap CMakeFiles/main.dir/src/player.cppm.obj.modmap CMakeFiles/main.dir/src/projectile.cppm.obj.modmap CMakeFiles/main.dir/src/enemy.cppm.obj.modmap CMakeFiles/main.dir/src/game.cppm.obj.modmap: CXX_DYNDEP__main_Debug CMakeFiles/main.dir/src/main.cpp.obj.ddi CMakeFiles/main.dir/src/player.cppm.obj.ddi CMakeFiles/main.dir/src/projectile.cppm.obj.ddi CMakeFiles/main.dir/src/enemy.cppm.obj.ddi CMakeFiles/main.dir/src/game.cppm.obj.ddi | C$:/Users/jerem/Desktop/C++/Projet$ C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/CXXDependInfo.json
+build CMakeFiles/main.dir/CXX.dd | C$:/Users/jerem/Desktop/C++/Projet$ C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/CXXModules.json CMakeFiles/main.dir/src/main.cpp.obj.modmap CMakeFiles/main.dir/src/explosion.cppm.obj.modmap CMakeFiles/main.dir/src/player.cppm.obj.modmap CMakeFiles/main.dir/src/projectile.cppm.obj.modmap CMakeFiles/main.dir/src/enemy.cppm.obj.modmap CMakeFiles/main.dir/src/game.cppm.obj.modmap: CXX_DYNDEP__main_Debug CMakeFiles/main.dir/src/main.cpp.obj.ddi CMakeFiles/main.dir/src/explosion.cppm.obj.ddi CMakeFiles/main.dir/src/player.cppm.obj.ddi CMakeFiles/main.dir/src/projectile.cppm.obj.ddi CMakeFiles/main.dir/src/enemy.cppm.obj.ddi CMakeFiles/main.dir/src/game.cppm.obj.ddi | C$:/Users/jerem/Desktop/C++/Projet$ C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/CXXDependInfo.json
 
 
 # =============================================================================
@@ -154,9 +173,9 @@ build CMakeFiles/main.dir/CXX.dd | C$:/Users/jerem/Desktop/C++/Projet$ C++/CPP-T
 #############################################
 # Link the executable bin\main.exe
 
-build bin/main.exe: CXX_EXECUTABLE_LINKER__main_Debug CMakeFiles/main.dir/src/main.cpp.obj CMakeFiles/main.dir/src/player.cppm.obj CMakeFiles/main.dir/src/projectile.cppm.obj CMakeFiles/main.dir/src/enemy.cppm.obj CMakeFiles/main.dir/src/game.cppm.obj | _deps/sfml-build/lib/libsfml-graphics-s-d.a _deps/sfml-build/lib/libsfml-window-s-d.a _deps/sfml-build/lib/libsfml-system-s-d.a _deps/sfml-src/extlibs/libs-mingw/x64/libfreetype.a || _deps/sfml-build/lib/libsfml-graphics-s-d.a _deps/sfml-build/lib/libsfml-system-s-d.a _deps/sfml-build/lib/libsfml-window-s-d.a
+build bin/main.exe: CXX_EXECUTABLE_LINKER__main_Debug CMakeFiles/main.dir/src/main.cpp.obj CMakeFiles/main.dir/src/explosion.cppm.obj CMakeFiles/main.dir/src/player.cppm.obj CMakeFiles/main.dir/src/projectile.cppm.obj CMakeFiles/main.dir/src/enemy.cppm.obj CMakeFiles/main.dir/src/game.cppm.obj | _deps/sfml-build/lib/libsfml-graphics-s-d.a _deps/sfml-build/lib/libsfml-audio-s-d.a _deps/sfml-build/lib/libsfml-window-s-d.a _deps/sfml-src/extlibs/libs-mingw/x64/libfreetype.a _deps/sfml-src/extlibs/libs-mingw/x64/libopenal32.a _deps/sfml-build/lib/libsfml-system-s-d.a _deps/sfml-src/extlibs/libs-mingw/x64/libvorbisenc.a _deps/sfml-src/extlibs/libs-mingw/x64/libvorbisfile.a _deps/sfml-src/extlibs/libs-mingw/x64/libvorbis.a _deps/sfml-src/extlibs/libs-mingw/x64/libogg.a _deps/sfml-src/extlibs/libs-mingw/x64/libFLAC.a || _deps/sfml-build/lib/libsfml-audio-s-d.a _deps/sfml-build/lib/libsfml-graphics-s-d.a _deps/sfml-build/lib/libsfml-system-s-d.a _deps/sfml-build/lib/libsfml-window-s-d.a
   FLAGS = -g
-  LINK_LIBRARIES = _deps/sfml-build/lib/libsfml-graphics-s-d.a  _deps/sfml-build/lib/libsfml-window-s-d.a  _deps/sfml-build/lib/libsfml-system-s-d.a  -lopengl32  -lwinmm  -lgdi32  _deps/sfml-src/extlibs/libs-mingw/x64/libfreetype.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = _deps/sfml-build/lib/libsfml-graphics-s-d.a  _deps/sfml-build/lib/libsfml-audio-s-d.a  _deps/sfml-build/lib/libsfml-window-s-d.a  -lopengl32  -lgdi32  _deps/sfml-src/extlibs/libs-mingw/x64/libfreetype.a  _deps/sfml-src/extlibs/libs-mingw/x64/libopenal32.a  _deps/sfml-build/lib/libsfml-system-s-d.a  -lwinmm  _deps/sfml-src/extlibs/libs-mingw/x64/libvorbisenc.a  _deps/sfml-src/extlibs/libs-mingw/x64/libvorbisfile.a  _deps/sfml-src/extlibs/libs-mingw/x64/libvorbis.a  _deps/sfml-src/extlibs/libs-mingw/x64/libogg.a  _deps/sfml-src/extlibs/libs-mingw/x64/libFLAC.a  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\main.dir
   POST_BUILD = cd .
   PRE_LINK = C:\Windows\system32\cmd.exe /C "cd /D "C:\Users\jerem\Desktop\C++\Projet C++\CPP-TP-2\cmake-build-debug" && "C:\Program Files\JetBrains\CLion 2024.2.3\bin\cmake\win\x64\bin\cmake.exe" -E copy "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/extlibs/bin/x64/openal32.dll" "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/bin" && cd "C:\Users\jerem\Desktop\C++\Projet C++\CPP-TP-2\cmake-build-debug""

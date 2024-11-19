@@ -3,46 +3,19 @@ module;
 #include <iostream>
 #include <memory>
 #include <random>
+#include <SFML/Audio.hpp>
 
 export module Game;
 import Player;
 import Projectile;
 import Enemy;
+import Explosion;
 
 using namespace sf;
 using namespace std;
 
 export class Game {
 public:
-    RenderWindow window;
-    unique_ptr<Player> player = make_unique<Player>(3);
-    vector<Projectile> projectiles;
-    vector<Enemy> enemies;
-
-    Clock shootClock;
-    float shootInterval = 0.4f;
-    shared_ptr<Texture> projectileTexture;
-
-    Clock enemySpawnClock;
-    float spawnInterval = 2.0f;
-    shared_ptr<Texture> enemyTexture;
-
-    Texture lifeTexture;
-    Texture backgroundTexture;
-    Sprite backgroundSprite;
-
-    Font font;
-
-    Cursor handCursor;
-    Cursor defaultCursor;
-
-    bool isPaused{false};
-
-    Text pauseText{"Pause", font, 300};
-    Text resumeButton{"Reprendre", font, 50};
-    Text closeButton{"Quitter", font, 50};
-
-    Text scoreText{"Score : ", font, 30};
 
     Game() : window(VideoMode(1920, 1080), "Invasion", Style::Fullscreen), projectileTexture{make_shared<Texture>()}, enemyTexture{make_shared<Texture>()} {
         window.setFramerateLimit(144);
@@ -81,8 +54,39 @@ public:
             cerr << "Erreur lors du chargement du curseur par défaut.\n";
         }
 
+        if (!shootBuffer.loadFromFile("src/assets/Sound/laser.wav")) {
+            std::cerr << "Erreur lors du chargement du son de tir.\n";
+        }
+        shootSound.setBuffer(shootBuffer);
+        shootSound.setVolume(50); // Réglage du volume
+
+        if (!explosionBuffer.loadFromFile("src/assets/Sound/explosion.wav")) {
+            std::cerr << "Erreur lors du chargement du son d'explosion'.\n";
+        }
+        explosionSound.setBuffer(explosionBuffer);
+        explosionSound.setVolume(50);
+
+        if (!gameOverBuffer.loadFromFile("src/assets/Sound/gameOver.wav")) {
+            std::cerr << "Erreur lors du chargement du son d'explosion'.\n";
+        }
+        gameOverSound.setBuffer(gameOverBuffer);
+        gameOverSound.setVolume(50);
+
+        if (!backgroundMusic.openFromFile("src/assets/Sound/fond.wav")) {
+            std::cerr << "Erreur lors du chargement de la musique de fond.\n";
+        }
+
+        backgroundMusic.setLoop(true);
+        backgroundMusic.setVolume(50);
+
+        backgroundMusic.play();
+
+        if (!explosionTexture.loadFromFile("src/assets/explosion.png")) {
+            std::cerr << "Erreur lors du chargement de la texture d'explosion.\n";
+        }
+
         pauseText.setFillColor(Color::White);
-        pauseText.setPosition(600, 100);
+        pauseText.setPosition(700, 100);
 
         resumeButton.setFillColor(Color::White);
         resumeButton.setPosition(860, 500);
@@ -91,7 +95,7 @@ public:
         closeButton.setPosition(860, 600);
 
         scoreText.setFillColor(Color::White);
-        scoreText.setPosition(1600, 10);
+        scoreText.setPosition(20, 50);
     }
 
     void run() {
@@ -109,13 +113,61 @@ public:
 
             if (!player->isAlive()) {
                 showGameOver();
-                resetGame(); // Ajoutez cette ligne pour relancer le jeu après le menu Game Over
-                continue; // Retourne à la boucle pour recommencer le jeu
+                resetGame();
+                continue;
             }
 
             render();
         }
     }
+
+private:
+
+    RenderWindow window;
+    unique_ptr<Player> player = make_unique<Player>(3);
+    vector<Projectile> projectiles;
+    vector<Enemy> enemies;
+
+    Clock shootClock;
+    float shootInterval = 0.4f;
+    shared_ptr<Texture> projectileTexture;
+
+    Clock enemySpawnClock;
+    float spawnInterval = 2.0f;
+    shared_ptr<Texture> enemyTexture;
+
+    Texture lifeTexture;
+    Texture backgroundTexture;
+    Sprite backgroundSprite;
+
+    Font font;
+
+    Cursor handCursor;
+    Cursor defaultCursor;
+
+    bool isPaused{false};
+
+    Text pauseText{"Pause", font, 300};
+    Text resumeButton{"Reprendre", font, 50};
+    Text closeButton{"Quitter", font, 50};
+
+    Text scoreText{"Score : ", font, 50};
+
+    SoundBuffer shootBuffer;
+    Sound shootSound;
+
+    SoundBuffer explosionBuffer;
+    Sound explosionSound;
+
+    SoundBuffer gameOverBuffer;
+    Sound gameOverSound;
+
+    Music backgroundMusic;
+
+    Texture explosionTexture;
+    Explosion explosion{explosionTexture, 64, 64, 8, 0.1f};
+
+    vector<Explosion> explosions;
 
     void resetGame() {
 
@@ -168,14 +220,14 @@ public:
 
                 if (playButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
                     window.setMouseCursor(handCursor);
-                    playButton.setCharacterSize(60);
+                    playButton.setFillColor(Color::Yellow);
                 } else if (closeButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
                     window.setMouseCursor(handCursor);
-                    closeButton.setCharacterSize(60);
+                    closeButton.setFillColor(Color::Yellow);
                 } else {
                     window.setMouseCursor(defaultCursor);
-                    playButton.setCharacterSize(50);
-                    closeButton.setCharacterSize(50);
+                    playButton.setFillColor(Color::White);
+                    closeButton.setFillColor(Color::White);
                 }
             }
 
@@ -189,6 +241,20 @@ public:
     }
 
     void showPause() {
+        auto mousePos{Mouse::getPosition(window)};
+
+        if (resumeButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+            window.setMouseCursor(handCursor);
+            resumeButton.setFillColor(Color::Yellow);
+        } else if (closeButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
+            window.setMouseCursor(handCursor);
+            closeButton.setFillColor(Color::Yellow);
+        } else {
+            window.setMouseCursor(defaultCursor);
+            resumeButton.setFillColor(Color::White);
+            closeButton.setFillColor(Color::White);
+        }
+
         window.draw(pauseText);
         window.draw(resumeButton);
         window.draw(closeButton);
@@ -207,6 +273,12 @@ public:
         Text textGameOver("Game Over", font, 300);
         textGameOver.setFillColor(Color::White);
         textGameOver.setPosition(400, 50);
+
+        Text textScore(format("Score : {}", player->getScore()), font, 100);
+        textScore.setFillColor(Color::White);
+        textScore.setPosition(750, 350);
+
+        gameOverSound.play();
 
         while (window.isOpen()) {
             Event event;
@@ -232,14 +304,14 @@ public:
 
                 if (replayButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
                     window.setMouseCursor(handCursor);
-                    replayButton.setCharacterSize(60);
+                    replayButton.setFillColor(Color::Yellow);
                 } else if (closeButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
                     window.setMouseCursor(handCursor);
-                    closeButton.setCharacterSize(60);
+                    closeButton.setFillColor(Color::Yellow);
                 } else {
                     window.setMouseCursor(defaultCursor);
-                    replayButton.setCharacterSize(50);
-                    closeButton.setCharacterSize(50);
+                    replayButton.setFillColor(Color::White);
+                    closeButton.setFillColor(Color::White);
                 }
             }
 
@@ -248,11 +320,32 @@ public:
             window.draw(replayButton);
             window.draw(closeButton);
             window.draw(textGameOver);
+            window.draw(textScore);
             window.display();
         }
     }
 
-private:
+    void spawnEnemies(int numberOfEnemies) {
+
+        random_device rd_spawn;
+        mt19937 gen_spawn(rd_spawn());
+        uniform_int_distribution<> dis_spawn(0, window.getSize().x - 100);
+
+        random_device rd_scale;
+        mt19937 gen_scale(rd_scale());
+        uniform_int_distribution<> dis_scale(2.0f, 4.0f);
+
+        random_device rd_speed;
+        mt19937 gen_speed(rd_speed());
+        uniform_int_distribution<> dis_speed(50.0f, 100.0f);
+
+        for (int i = 0; i < numberOfEnemies; ++i) {
+            auto startX = dis_spawn(gen_spawn);
+            auto startY = -100;
+            enemies.emplace_back(enemyTexture, startX, startY,dis_scale(gen_scale),dis_speed(gen_speed));
+        }
+    }
+
     void processEvents() {
         Event event;
         while (window.pollEvent(event)) {
@@ -285,34 +378,16 @@ private:
         }
     }
 
-    void spawnEnemies(int numberOfEnemies) {
-
-        random_device rd_spawn;
-        mt19937 gen_spawn(rd_spawn());
-        uniform_int_distribution<> dis_spawn(0, window.getSize().x - 100);
-
-        random_device rd_scale;
-        mt19937 gen_scale(rd_scale());
-        uniform_int_distribution<> dis_scale(2.0f, 4.0f);
-
-        random_device rd_speed;
-        mt19937 gen_speed(rd_speed());
-        uniform_int_distribution<> dis_speed(50.0f, 100.0f);
-
-        for (int i = 0; i < numberOfEnemies; ++i) {
-            auto startX = dis_spawn(gen_spawn);
-            auto startY = -100;
-            enemies.emplace_back(enemyTexture, startX, startY,dis_scale(gen_scale),dis_speed(gen_speed));
-        }
-    }
-
     void update(float deltaTime) {
         player->update(deltaTime);
         scoreText.setString(format("Score : {}", player->getScore()));
 
+        explosion.update(deltaTime);
+
         if (!isPaused) {
             if (Keyboard::isKeyPressed(Keyboard::Space) && shootClock.getElapsedTime().asSeconds() >= shootInterval) {
                 projectiles.emplace_back(projectileTexture, player->sprite.getPosition().x + player->sprite.getGlobalBounds().width / 2, player->sprite.getPosition().y);
+                shootSound.play();
                 shootClock.restart();
             }
         }
@@ -358,6 +433,11 @@ private:
             bool hit = false;
             for (auto et = enemies.begin(); et != enemies.end(); ) {
                 if (it->sprite.getGlobalBounds().intersects(et->sprite.getGlobalBounds())) {
+                    explosionSound.play();
+                    explosions.emplace_back(explosionTexture, 64, 64, 8, 0.1f);
+                    explosions.back().sprite.setPosition(et->sprite.getPosition());
+                    explosions.back().sprite.setScale(et->sprite.getScale());
+
                     it = projectiles.erase(it);
                     et = enemies.erase(et);
                     hit = true;
@@ -371,6 +451,15 @@ private:
                 ++it;
             }
         }
+
+        for (auto it = explosions.begin(); it != explosions.end(); ) {
+            it->update(deltaTime);
+            if (it->isFinished) {
+                it = explosions.erase(it); // Supprimer l'explosion terminée
+            } else {
+                ++it;
+            }
+        }
     }
 
     void render() {
@@ -381,13 +470,8 @@ private:
         window.draw(backgroundSprite);
         window.draw(player->sprite);
 
-        for (const auto& proj : projectiles) {
-            window.draw(proj.sprite);
-        }
-
-        for (const auto& enemy : enemies) {
-            window.draw(enemy.sprite);
-        }
+        for (const auto& proj : projectiles) { window.draw(proj.sprite); }
+        for (const auto& enemy : enemies) { window.draw(enemy.sprite); }
 
         for (int i = 0; i < player->lives; ++i) {
             Sprite lifeSprite;
@@ -397,11 +481,11 @@ private:
             window.draw(lifeSprite);
         }
 
+        for (const auto& explosion : explosions) { window.draw(explosion.sprite); }
+
         window.draw(scoreText);
 
-        if (isPaused) {
-            showPause();
-        }
+        if (isPaused) { showPause(); }
 
         window.display();
     }

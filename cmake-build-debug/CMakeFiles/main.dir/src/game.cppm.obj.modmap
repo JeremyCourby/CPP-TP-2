@@ -3,3 +3,4 @@
 -fmodule-file=Player=CMakeFiles/main.dir/Player.pcm
 -fmodule-file=Projectile=CMakeFiles/main.dir/Projectile.pcm
 -fmodule-file=Enemy=CMakeFiles/main.dir/Enemy.pcm
+-fmodule-file=Explosion=CMakeFiles/main.dir/Explosion.pcm

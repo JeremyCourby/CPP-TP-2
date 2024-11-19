@@ -19,6 +19,9 @@
         },
         {
           "logical-name": "Enemy"
+        },
+        {
+          "logical-name": "Explosion"
         }
       ]
     }

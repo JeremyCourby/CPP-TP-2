@@ -16,6 +16,16 @@
 			"type" : "CXX_MODULES",
 			"visibility" : "PUBLIC"
 		},
+		"CMakeFiles/main.dir/src/explosion.cppm.obj" : 
+		{
+			"bmi-only" : false,
+			"destination" : null,
+			"name" : "CXX_MODULES",
+			"relative-directory" : "src",
+			"source" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/src/explosion.cppm",
+			"type" : "CXX_MODULES",
+			"visibility" : "PUBLIC"
+		},
 		"CMakeFiles/main.dir/src/game.cppm.obj" : 
 		{
 			"bmi-only" : false,

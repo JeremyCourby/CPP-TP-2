@@ -6,6 +6,11 @@
 			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/Enemy.pcm",
 			"is-private" : false
 		},
+		"Explosion" : 
+		{
+			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/Explosion.pcm",
+			"is-private" : false
+		},
 		"Game" : 
 		{
 			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/Game.pcm",
@@ -29,6 +34,11 @@
 			"lookup-method" : "by-name",
 			"path" : "CMakeFiles/main.dir/Enemy.pcm"
 		},
+		"Explosion" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "CMakeFiles/main.dir/Explosion.pcm"
+		},
 		"Game" : 
 		{
 			"lookup-method" : "by-name",
@@ -50,6 +60,7 @@
 		"Game" : 
 		[
 			"Enemy",
+			"Explosion",
 			"Player",
 			"Projectile"
 		]

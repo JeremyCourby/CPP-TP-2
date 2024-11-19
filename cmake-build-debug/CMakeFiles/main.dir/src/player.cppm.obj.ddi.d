@@ -814,4 +814,22 @@ CMakeFiles\main.dir\src\player.cppm.obj.ddi: \
   C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Graphics/Text.hpp \
   C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Graphics/VertexBuffer.hpp \
   C:/Users/jerem/Documents/llvm-mingw-20240619-msvcrt-x86_64/include/c++/v1/iostream \
-  C:/Users/jerem/Documents/llvm-mingw-20240619-msvcrt-x86_64/include/c++/v1/istream
+  C:/Users/jerem/Documents/llvm-mingw-20240619-msvcrt-x86_64/include/c++/v1/istream \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/InputSoundFile.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/Export.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/Listener.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/Music.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/SoundStream.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/SoundSource.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/AlResource.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/OutputSoundFile.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/Sound.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/SoundBuffer.hpp \
+  C:/Users/jerem/Documents/llvm-mingw-20240619-msvcrt-x86_64/include/c++/v1/set \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/SoundBufferRecorder.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/SoundRecorder.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/SoundFileFactory.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/SoundFileFactory.inl \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/SoundFileReader.hpp \
+  C:/Users/jerem/Desktop/C++/Projet\ C++/CPP-TP-2/cmake-build-debug/_deps/sfml-src/include/SFML/Audio/SoundFileWriter.hpp
