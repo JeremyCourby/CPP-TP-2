@@ -4,7 +4,16 @@ build CMakeFiles/main.dir/src/main.cpp.obj: dyndep | CMakeFiles/main.dir/Game.pc
 build CMakeFiles/main.dir/src/explosion.cppm.obj | CMakeFiles/main.dir/Explosion.pcm: dyndep
   restat = 1
 
-build CMakeFiles/main.dir/src/bonus.cppm.obj | CMakeFiles/main.dir/Bonus.pcm: dyndep
+build CMakeFiles/main.dir/src/bonus.cppm.obj | CMakeFiles/main.dir/Bonus.pcm: dyndep | CMakeFiles/main.dir/Player.pcm
+  restat = 1
+
+build CMakeFiles/main.dir/src/lifeBonus.cppm.obj | CMakeFiles/main.dir/LifeBonus.pcm: dyndep | CMakeFiles/main.dir/Bonus.pcm CMakeFiles/main.dir/Player.pcm
+  restat = 1
+
+build CMakeFiles/main.dir/src/speedBonus.cppm.obj | CMakeFiles/main.dir/SpeedBonus.pcm: dyndep | CMakeFiles/main.dir/Bonus.pcm CMakeFiles/main.dir/Player.pcm
+  restat = 1
+
+build CMakeFiles/main.dir/src/bulletBonus.cppm.obj | CMakeFiles/main.dir/BulletBonus.pcm: dyndep | CMakeFiles/main.dir/Bonus.pcm CMakeFiles/main.dir/Player.pcm
   restat = 1
 
 build CMakeFiles/main.dir/src/player.cppm.obj | CMakeFiles/main.dir/Player.pcm: dyndep
@@ -16,6 +25,6 @@ build CMakeFiles/main.dir/src/projectile.cppm.obj | CMakeFiles/main.dir/Projecti
 build CMakeFiles/main.dir/src/enemy.cppm.obj | CMakeFiles/main.dir/Enemy.pcm: dyndep
   restat = 1
 
-build CMakeFiles/main.dir/src/game.cppm.obj | CMakeFiles/main.dir/Game.pcm: dyndep | CMakeFiles/main.dir/Player.pcm CMakeFiles/main.dir/Projectile.pcm CMakeFiles/main.dir/Enemy.pcm CMakeFiles/main.dir/Explosion.pcm CMakeFiles/main.dir/Bonus.pcm
+build CMakeFiles/main.dir/src/game.cppm.obj | CMakeFiles/main.dir/Game.pcm: dyndep | CMakeFiles/main.dir/Player.pcm CMakeFiles/main.dir/Projectile.pcm CMakeFiles/main.dir/Enemy.pcm CMakeFiles/main.dir/Explosion.pcm CMakeFiles/main.dir/Bonus.pcm CMakeFiles/main.dir/LifeBonus.pcm CMakeFiles/main.dir/SpeedBonus.pcm CMakeFiles/main.dir/BulletBonus.pcm
   restat = 1
 

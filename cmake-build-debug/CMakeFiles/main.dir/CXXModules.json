@@ -6,6 +6,11 @@
 			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/Bonus.pcm",
 			"is-private" : false
 		},
+		"BulletBonus" : 
+		{
+			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/BulletBonus.pcm",
+			"is-private" : false
+		},
 		"Enemy" : 
 		{
 			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/Enemy.pcm",
@@ -21,6 +26,11 @@
 			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/Game.pcm",
 			"is-private" : false
 		},
+		"LifeBonus" : 
+		{
+			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/LifeBonus.pcm",
+			"is-private" : false
+		},
 		"Player" : 
 		{
 			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/Player.pcm",
@@ -30,6 +40,11 @@
 		{
 			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/Projectile.pcm",
 			"is-private" : false
+		},
+		"SpeedBonus" : 
+		{
+			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/SpeedBonus.pcm",
+			"is-private" : false
 		}
 	},
 	"references" : 
@@ -38,6 +53,11 @@
 		{
 			"lookup-method" : "by-name",
 			"path" : "CMakeFiles/main.dir/Bonus.pcm"
+		},
+		"BulletBonus" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "CMakeFiles/main.dir/BulletBonus.pcm"
 		},
 		"Enemy" : 
 		{
@@ -54,6 +74,11 @@
 			"lookup-method" : "by-name",
 			"path" : "CMakeFiles/main.dir/Game.pcm"
 		},
+		"LifeBonus" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "CMakeFiles/main.dir/LifeBonus.pcm"
+		},
 		"Player" : 
 		{
 			"lookup-method" : "by-name",
@@ -63,17 +88,44 @@
 		{
 			"lookup-method" : "by-name",
 			"path" : "CMakeFiles/main.dir/Projectile.pcm"
+		},
+		"SpeedBonus" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "CMakeFiles/main.dir/SpeedBonus.pcm"
 		}
 	},
 	"usages" : 
 	{
+		"Bonus" : 
+		[
+			"Player"
+		],
+		"BulletBonus" : 
+		[
+			"Bonus",
+			"Player"
+		],
 		"Game" : 
 		[
 			"Bonus",
+			"BulletBonus",
 			"Enemy",
 			"Explosion",
+			"LifeBonus",
 			"Player",
-			"Projectile"
+			"Projectile",
+			"SpeedBonus"
+		],
+		"LifeBonus" : 
+		[
+			"Bonus",
+			"Player"
+		],
+		"SpeedBonus" : 
+		[
+			"Bonus",
+			"Player"
 		]
 	}
 }

@@ -5,3 +5,6 @@
 -fmodule-file=Enemy=CMakeFiles/main.dir/Enemy.pcm
 -fmodule-file=Explosion=CMakeFiles/main.dir/Explosion.pcm
 -fmodule-file=Bonus=CMakeFiles/main.dir/Bonus.pcm
+-fmodule-file=LifeBonus=CMakeFiles/main.dir/LifeBonus.pcm
+-fmodule-file=SpeedBonus=CMakeFiles/main.dir/SpeedBonus.pcm
+-fmodule-file=BulletBonus=CMakeFiles/main.dir/BulletBonus.pcm

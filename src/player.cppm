@@ -10,21 +10,6 @@ export module Player;
 
 export class Player {
 public:
-    Sprite sprite;
-    Texture texture;
-    float speed{400.0f};
-    int lives{3};
-    int score{0};
-
-    // Variables pour la gestion du clignotement
-    bool isBlinking = false;
-    Clock blinkClock;
-    float blinkDuration = 1.0f; // Durée totale du clignotement en secondes
-    float blinkInterval = 0.1f; // Intervalle de clignotement (on/off)
-
-    SoundBuffer lifeLostBuffer;
-    Sound lifeLostSound;
-
     explicit Player(auto lives):lives{lives} {
         if (!texture.loadFromFile("src/assets/player.png")) {
             cerr << "Erreur lors du chargement de la texture du vaisseau.\n";
@@ -41,13 +26,22 @@ public:
         lifeLostSound.setVolume(50);
     }
 
-    int getScore() { return score; }
-    int setScore(auto score) { this->score = score; }
+    auto getSprite() { return sprite; }
+    auto setSprite(auto const sprite) { this->sprite = sprite; }
 
-    int getLives() { return lives; }
-    int setLives(auto lives) { this->lives = lives; }
+    auto getTexture() { return texture; }
+    auto setTexture(auto const texture) { this->texture = texture; }
 
-    void update(float deltaTime) {
+    auto getSpeed() { return speed; }
+    auto setSpeed(auto const speed) { this->speed = speed; }
+
+    auto getLives() { return lives; }
+    auto setLives(auto const lives) { this->lives = lives; }
+
+    auto getScore() { return score; }
+    auto setScore(auto const score) { this->score = score; }
+
+    void update(float const deltaTime) {
         if (Keyboard::isKeyPressed(Keyboard::Left) && sprite.getPosition().x > 0)
             sprite.move(-speed * deltaTime, 0);
         if (Keyboard::isKeyPressed(Keyboard::Right) && sprite.getPosition().x < 1920 - sprite.getGlobalBounds().width)
@@ -81,14 +75,49 @@ public:
         }
     }
 
-    int addScore(auto score) {
+    auto addScore(auto const score) {
         this->score += score;
         return this->score;
     }
 
+    auto addLives(auto const lives) {
+        if (this->lives < 5)
+        {
+            this->lives += lives;
+        }
+        return this->lives;
+    }
 
-
-    bool isAlive() const {
+    auto isAlive() const {
         return lives > 0;
     }
+
+    auto haveSpeedBonus() {
+        if(speed > 400)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+
+    // auto haveBulletBonus() const{
+    //     if(fireRate != ...)
+    //         return true;
+    // }
+
+private:
+    Sprite sprite;
+    Texture texture;
+    float speed{400.0f};
+    int lives{3};
+    int score{0};
+
+    bool isBlinking = false;
+    Clock blinkClock;
+    float blinkDuration = 1.0f;
+    float blinkInterval = 0.1f;
+    SoundBuffer lifeLostBuffer;
+    Sound lifeLostSound;
 };

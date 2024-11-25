@@ -25,6 +25,15 @@
         },
         {
           "logical-name": "Bonus"
+        },
+        {
+          "logical-name": "LifeBonus"
+        },
+        {
+          "logical-name": "SpeedBonus"
+        },
+        {
+          "logical-name": "BulletBonus"
         }
       ]
     }

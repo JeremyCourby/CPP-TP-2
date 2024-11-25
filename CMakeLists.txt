@@ -24,10 +24,16 @@ set(PROJECT_FILES
         src/game.cppm
         src/explosion.cppm
         src/bonus.cppm
+        src/lifeBonus.cppm
+        src/speedBonus.cppm
+        src/bulletBonus.cppm
 )
 add_executable(main src/main.cpp
         src/explosion.cppm
         src/bonus.cppm
+        src/lifeBonus.cppm
+        src/speedBonus.cppm
+        src/bulletBonus.cppm
 )
 target_sources(main
         PUBLIC

@@ -6,33 +6,44 @@ module;
 using namespace sf;
 using namespace std;
 
+import Player;
+
 export module Bonus;
 
 export class Bonus {
-public:
+protected:
     Sprite sprite;
-    bool isActive{false};
+    bool isActive = true;
     float speed{200.0f};
-    int type{0};
 
-    Bonus() = default;
-
-    void spawn(auto position, auto texture, auto scale) {
-        sprite.setPosition(position);
+public:
+    Bonus(const shared_ptr<Texture> texture) {
         sprite.setTexture(*texture);
-        sprite.scale(scale, scale);
-        isActive = true;
     }
 
-    void update(auto deltaTime) {
+    virtual ~Bonus() = default;
+
+    virtual void applyEffect(Player& player) = 0;
+    void update(float deltaTime) {
         if (isActive) {
             sprite.move(0, speed * deltaTime);
-            // Vérifie si le bonus sort de l'écran
             if (sprite.getPosition().y > 1080) {
                 isActive = false;
             }
         }
     }
+
+    virtual void updateBonus(Player& player){};
+
+    virtual void spawn(const sf::Vector2f& position, float duration) {
+        sprite.setPosition(position);
+        isActive = true;
+        // Ajoutez une logique pour la durée (si nécessaire, via un timer)
+    }
+
+    const sf::Sprite& getSprite() const { return sprite; }
+    bool getIsActive() const { return isActive; }
+    void setIsActive(bool active) { isActive = active; }
 
     void draw(auto &window) {
         if (isActive) {

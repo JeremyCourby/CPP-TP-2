@@ -16,6 +16,16 @@
 			"type" : "CXX_MODULES",
 			"visibility" : "PUBLIC"
 		},
+		"CMakeFiles/main.dir/src/bulletBonus.cppm.obj" : 
+		{
+			"bmi-only" : false,
+			"destination" : null,
+			"name" : "CXX_MODULES",
+			"relative-directory" : "src",
+			"source" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/src/bulletBonus.cppm",
+			"type" : "CXX_MODULES",
+			"visibility" : "PUBLIC"
+		},
 		"CMakeFiles/main.dir/src/enemy.cppm.obj" : 
 		{
 			"bmi-only" : false,
@@ -46,6 +56,16 @@
 			"type" : "CXX_MODULES",
 			"visibility" : "PUBLIC"
 		},
+		"CMakeFiles/main.dir/src/lifeBonus.cppm.obj" : 
+		{
+			"bmi-only" : false,
+			"destination" : null,
+			"name" : "CXX_MODULES",
+			"relative-directory" : "src",
+			"source" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/src/lifeBonus.cppm",
+			"type" : "CXX_MODULES",
+			"visibility" : "PUBLIC"
+		},
 		"CMakeFiles/main.dir/src/player.cppm.obj" : 
 		{
 			"bmi-only" : false,
@@ -63,6 +83,16 @@
 			"name" : "CXX_MODULES",
 			"relative-directory" : "src",
 			"source" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/src/projectile.cppm",
+			"type" : "CXX_MODULES",
+			"visibility" : "PUBLIC"
+		},
+		"CMakeFiles/main.dir/src/speedBonus.cppm.obj" : 
+		{
+			"bmi-only" : false,
+			"destination" : null,
+			"name" : "CXX_MODULES",
+			"relative-directory" : "src",
+			"source" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/src/speedBonus.cppm",
 			"type" : "CXX_MODULES",
 			"visibility" : "PUBLIC"
 		}
