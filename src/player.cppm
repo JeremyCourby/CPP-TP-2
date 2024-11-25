@@ -41,6 +41,12 @@ public:
         lifeLostSound.setVolume(50);
     }
 
+    int getScore() { return score; }
+    int setScore(auto score) { this->score = score; }
+
+    int getLives() { return lives; }
+    int setLives(auto lives) { this->lives = lives; }
+
     void update(float deltaTime) {
         if (Keyboard::isKeyPressed(Keyboard::Left) && sprite.getPosition().x > 0)
             sprite.move(-speed * deltaTime, 0);
@@ -80,8 +86,7 @@ public:
         return this->score;
     }
 
-    int getScore() { return score; }
-    int setScore(auto score) { this->score = score; }
+
 
     bool isAlive() const {
         return lives > 0;

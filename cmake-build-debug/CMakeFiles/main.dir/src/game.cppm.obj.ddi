@@ -22,6 +22,9 @@
         },
         {
           "logical-name": "Explosion"
+        },
+        {
+          "logical-name": "Bonus"
         }
       ]
     }

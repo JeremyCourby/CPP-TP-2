@@ -1,6 +1,11 @@
 {
 	"modules" : 
 	{
+		"Bonus" : 
+		{
+			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/Bonus.pcm",
+			"is-private" : false
+		},
 		"Enemy" : 
 		{
 			"bmi" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/cmake-build-debug/CMakeFiles/main.dir/Enemy.pcm",
@@ -29,6 +34,11 @@
 	},
 	"references" : 
 	{
+		"Bonus" : 
+		{
+			"lookup-method" : "by-name",
+			"path" : "CMakeFiles/main.dir/Bonus.pcm"
+		},
 		"Enemy" : 
 		{
 			"lookup-method" : "by-name",
@@ -59,6 +69,7 @@
 	{
 		"Game" : 
 		[
+			"Bonus",
 			"Enemy",
 			"Explosion",
 			"Player",

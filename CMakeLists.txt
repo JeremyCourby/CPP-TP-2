@@ -23,9 +23,11 @@ set(PROJECT_FILES
         src/enemy.cppm
         src/game.cppm
         src/explosion.cppm
+        src/bonus.cppm
 )
 add_executable(main src/main.cpp
         src/explosion.cppm
+        src/bonus.cppm
 )
 target_sources(main
         PUBLIC

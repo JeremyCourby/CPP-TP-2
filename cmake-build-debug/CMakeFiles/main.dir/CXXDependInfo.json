@@ -6,6 +6,16 @@
 	"config" : "Debug",
 	"cxx-modules" : 
 	{
+		"CMakeFiles/main.dir/src/bonus.cppm.obj" : 
+		{
+			"bmi-only" : false,
+			"destination" : null,
+			"name" : "CXX_MODULES",
+			"relative-directory" : "src",
+			"source" : "C:/Users/jerem/Desktop/C++/Projet C++/CPP-TP-2/src/bonus.cppm",
+			"type" : "CXX_MODULES",
+			"visibility" : "PUBLIC"
+		},
 		"CMakeFiles/main.dir/src/enemy.cppm.obj" : 
 		{
 			"bmi-only" : false,

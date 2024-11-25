@@ -10,6 +10,7 @@ import Player;
 import Projectile;
 import Enemy;
 import Explosion;
+import Bonus;
 
 using namespace sf;
 using namespace std;
@@ -17,7 +18,7 @@ using namespace std;
 export class Game {
 public:
 
-    Game() : window(VideoMode(1920, 1080), "Invasion", Style::Fullscreen), projectileTexture{make_shared<Texture>()}, enemyTexture{make_shared<Texture>()} {
+    Game() : window(VideoMode(1920, 1080), "Invasion", Style::Fullscreen), projectileTexture{make_shared<Texture>()}, enemyTexture{make_shared<Texture>()}, bonusLifeTexture{make_shared<Texture>()} {
         window.setFramerateLimit(144);
 
         // Chargement des textures
@@ -27,6 +28,10 @@ public:
         } else {
             backgroundSprite.setTexture(backgroundTexture);
             backgroundSprite.setPosition(0, 0);
+        }
+
+        if (!bonusLifeTexture->loadFromFile("src/assets/life_2.png")) {
+            cerr << "Erreur lors du chargement de la texture du bonus life.\n";
         }
 
         if (!projectileTexture->loadFromFile("src/assets/projectile.png")) {
@@ -137,6 +142,9 @@ private:
     shared_ptr<Texture> enemyTexture;
 
     Texture lifeTexture;
+
+    shared_ptr<Texture> bonusLifeTexture;
+
     Texture backgroundTexture;
     Sprite backgroundSprite;
 
@@ -168,6 +176,9 @@ private:
     Explosion explosion{explosionTexture, 64, 64, 8, 0.1f};
 
     vector<Explosion> explosions;
+
+    vector<Bonus> bonuses;
+    Clock bonusClock;
 
     void resetGame() {
 
@@ -221,13 +232,17 @@ private:
                 if (playButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
                     window.setMouseCursor(handCursor);
                     playButton.setFillColor(Color::Yellow);
+                    playButton.setStyle(Text::Bold);
                 } else if (closeButton.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y))) {
                     window.setMouseCursor(handCursor);
                     closeButton.setFillColor(Color::Yellow);
+                    closeButton.setStyle(Text::Bold);
                 } else {
                     window.setMouseCursor(defaultCursor);
                     playButton.setFillColor(Color::White);
                     closeButton.setFillColor(Color::White);
+                    playButton.setStyle(Text::Regular);
+                    closeButton.setStyle(Text::Regular);
                 }
             }
 
@@ -384,6 +399,17 @@ private:
 
         explosion.update(deltaTime);
 
+        for (auto it = bonuses.begin(); it != bonuses.end();) {
+            it->update(deltaTime);
+            if (it->isActive && it->sprite.getGlobalBounds().intersects(player->sprite.getGlobalBounds())) {
+                it->isActive = false;
+                player->lives++;
+                it = bonuses.erase(it);
+            } else {
+                ++it;
+            }
+        }
+
         if (!isPaused) {
             if (Keyboard::isKeyPressed(Keyboard::Space) && shootClock.getElapsedTime().asSeconds() >= shootInterval) {
                 projectiles.emplace_back(projectileTexture, player->sprite.getPosition().x + player->sprite.getGlobalBounds().width / 2, player->sprite.getPosition().y);
@@ -438,6 +464,29 @@ private:
                     explosions.back().sprite.setPosition(et->sprite.getPosition());
                     explosions.back().sprite.setScale(et->sprite.getScale());
 
+                    Bonus newBonus{};
+
+                    random_device rdNumberBonus;
+                    mt19937 genNumberBonus(rdNumberBonus());
+                    uniform_int_distribution<> disNumberBonus(1, 3);
+
+                    if (std::rand() % 100 < 10 ) {
+                        switch (disNumberBonus(genNumberBonus))
+                        {
+                            case 1: // Bonus Life
+                                if (player->getLives() <= 5)
+                                {
+                                    newBonus.spawn(et->sprite.getPosition(), bonusLifeTexture, 3.0f);
+                                }
+
+                            case 2:  // Bonus Vitesse
+                                newBonus.spawn(et->sprite.getPosition(), bonusSpeedTexture, 3.0f);
+
+                        }
+                        bonuses.push_back(newBonus);
+
+                    }
+
                     it = projectiles.erase(it);
                     et = enemies.erase(et);
                     hit = true;
@@ -469,6 +518,8 @@ private:
 
         window.draw(backgroundSprite);
         window.draw(player->sprite);
+
+        for (auto &bonus : bonuses) { bonus.draw(window); }
 
         for (const auto& proj : projectiles) { window.draw(proj.sprite); }
         for (const auto& enemy : enemies) { window.draw(enemy.sprite); }

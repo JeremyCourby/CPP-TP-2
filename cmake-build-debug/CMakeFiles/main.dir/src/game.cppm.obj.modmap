@@ -4,3 +4,4 @@
 -fmodule-file=Projectile=CMakeFiles/main.dir/Projectile.pcm
 -fmodule-file=Enemy=CMakeFiles/main.dir/Enemy.pcm
 -fmodule-file=Explosion=CMakeFiles/main.dir/Explosion.pcm
+-fmodule-file=Bonus=CMakeFiles/main.dir/Bonus.pcm
