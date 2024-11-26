@@ -114,22 +114,6 @@ public:
         return lives > 0;
     }
 
-    auto haveSpeedBonus() {
-        if(speed > 400) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    auto haveBulletBonus() {
-        if(shootInterval > 0.5f) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     void activateSpeedBoost(float boostDuration, float speedAmount) {
         speedBoostTimer = boostDuration;
         speed = speedAmount;

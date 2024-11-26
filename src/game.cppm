@@ -2,7 +2,6 @@ module;
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <memory>
-#include <random>
 #include <SFML/Audio.hpp>
 
 export module Game;
@@ -39,51 +38,35 @@ public:
         backgroundMusic.setVolume(50);
         backgroundMusic.play();
 
-        pauseText.setFillColor(Color::White);
-        pauseText.setPosition(700, 100);
-
-        resumeButton.setFillColor(Color::White);
-        resumeButton.setPosition(860, 500);
-
-        closeButton.setFillColor(Color::White);
-        closeButton.setPosition(860, 600);
-
-        scoreText.setFillColor(Color::White);
-        scoreText.setPosition(20, 50);
-
-        speedBonusText.setFillColor(Color::White);
-        speedBonusText.setPosition(1820, 10);
-        bulletBonusText.setFillColor(Color::White);
-        bulletBonusText.setPosition(1820, 40);
+        initText(pauseText,"Pause",font,300,Vector2f{0,100},true);
+        initText(resumeButton,"Reprendre",font,50,Vector2f{0,500},true);
+        initText(closeButton,"Quitter",font,50,Vector2f{0,600},true);
+        initText(scoreText,"Score : ",font,50,Vector2f{20,50},false);
+        initText(speedBonusText,"",font,50,Vector2f{1870,10},false);
+        initText(bulletBonusText,"",font,50,Vector2f{1870,60},false);
 
         speedSprite.setTexture(speedTexture);
-        speedSprite.setPosition(1768, 25);
+        speedSprite.setPosition(1818, 25);
         speedSprite.scale(1.5f, 1.5f);
 
         bulletSprite.setTexture(bulletTexture);
-        bulletSprite.setPosition(1768,50);
-        bulletSprite.scale(0.5f, 0.5f);
+        bulletSprite.setPosition(1818,93);
+        bulletSprite.scale(0.25f, 0.25f);
+
     }
 
     void run() {
-
         showMenu();
-
         Clock clock;
         while (window.isOpen()) {
             float deltaTime = clock.restart().asSeconds();
             processEvents();
-
-            if (!isPaused && player->isAlive()) {
-                update(deltaTime);
-            }
-
+            if (!isPaused && player->isAlive()) { update(deltaTime); }
             if (!player->isAlive()) {
                 showGameOver();
                 resetGame();
                 continue;
             }
-
             render();
         }
     }
@@ -94,60 +77,21 @@ private:
     unique_ptr<Player> player = make_unique<Player>(3);
     vector<Projectile> projectiles;
     vector<Enemy> enemies;
-
-    Clock shootClock;
-    shared_ptr<Texture> projectileTexture;
-
-    Clock enemySpawnClock;
-    float spawnInterval = 2.0f;
-    shared_ptr<Texture> enemyTexture;
-
-    Texture lifeTexture;
-    Texture speedTexture;
-    Sprite speedSprite;
-    Texture bulletTexture;
-    Sprite bulletSprite;
-
-    shared_ptr<Texture> bonusLifeTexture;
-    shared_ptr<Texture> bonusSpeedTexture;
-    shared_ptr<Texture> bonusBulletTexture;
-
-    Texture backgroundTexture;
-    Sprite backgroundSprite;
-
+    Clock shootClock, enemySpawnClock;
+    shared_ptr<Texture> projectileTexture, enemyTexture, bonusLifeTexture, bonusSpeedTexture, bonusBulletTexture;
+    Texture lifeTexture, speedTexture, bulletTexture, backgroundTexture, explosionTexture;
+    Sprite speedSprite, bulletSprite, backgroundSprite;
     Font font;
-
-    Cursor handCursor;
-    Cursor defaultCursor;
-
-    bool isPaused{false};
-
-    Text pauseText{"Pause", font, 300};
-    Text resumeButton{"Reprendre", font, 50};
-    Text closeButton{"Quitter", font, 50};
-
-    Text scoreText{"Score : ", font, 50};
-
-    Text speedBonusText{"", font, 50};
-    Text bulletBonusText{"", font, 50};
-
-    SoundBuffer shootBuffer;
-    Sound shootSound;
-
-    SoundBuffer explosionBuffer;
-    Sound explosionSound;
-
-    SoundBuffer gameOverBuffer;
-    Sound gameOverSound;
-
+    Cursor handCursor, defaultCursor;
+    Text pauseText, resumeButton, closeButton,scoreText, speedBonusText, bulletBonusText, textNameGame, playButton,replayButton,textGameOver,textScore;
+    SoundBuffer shootBuffer, explosionBuffer, gameOverBuffer;
+    Sound shootSound, explosionSound, gameOverSound;
     Music backgroundMusic;
-
-    Texture explosionTexture;
     Explosion explosion{explosionTexture, 64, 64, 8, 0.1f};
-
     vector<Explosion> explosions;
-
     vector<unique_ptr<Bonus>> bonuses;
+    float spawnInterval = 2.0f;
+    bool isPaused{false};
 
     void loadTexture()
     {
@@ -158,100 +102,52 @@ private:
             backgroundSprite.setPosition(0, 0);
         }
 
-        if (!bonusLifeTexture->loadFromFile("src/assets/life_2.png")) {
-            cerr << "Erreur lors du chargement de la texture du bonus life.\n";
-        }
-
-        if (!bonusSpeedTexture->loadFromFile("src/assets/speed.png")) {
-            cerr << "Erreur lors du chargement de la texture du bonus de speed.\n";
-        }
-
-        if (!bonusBulletTexture->loadFromFile("src/assets/bullet.png")) {
-            cerr << "Erreur lors du chargement de la texture du bonus bullet.\n";
-        }
-
-        if (!projectileTexture->loadFromFile("src/assets/projectile.png")) {
-            cerr << "Erreur lors du chargement de la texture du projectile.\n";
-        }
-
-        if (!lifeTexture.loadFromFile("src/assets/life_2.png")) {
-            cerr << "Erreur lors du chargement de la texture du coeur.\n";
-        }
-
-        if (!speedTexture.loadFromFile("src/assets/speed.png")) {
-            cerr << "Erreur lors du chargement de la texture du coeur.\n";
-        }
-
-        if (!bulletTexture.loadFromFile("src/assets/bullet.png")) {
-            cerr << "Erreur lors du chargement de la texture du coeur.\n";
-        }
-
-        if (!enemyTexture->loadFromFile("src/assets/enemy.png")) {
-            cerr << "Erreur lors du chargement de la texture de l'ennemi.\n";
-        }
-
-        if (!font.loadFromFile("src/assets/Font/txt.ttf")) {
-            cerr << "Erreur lors du chargement de la police.\n";
-            return;
-        }
-
-        if (!handCursor.loadFromSystem(sf::Cursor::Hand)) {
-            cerr << "Erreur lors du chargement du curseur de la main.\n";
-        }
-
-        if (!defaultCursor.loadFromSystem(sf::Cursor::Arrow)) {
-            cerr << "Erreur lors du chargement du curseur par défaut.\n";
-        }
-
-        if (!shootBuffer.loadFromFile("src/assets/Sound/laser.wav")) {
-            std::cerr << "Erreur lors du chargement du son de tir.\n";
-        }
-
-        if (!explosionBuffer.loadFromFile("src/assets/Sound/explosion.wav")) {
-            std::cerr << "Erreur lors du chargement du son d'explosion'.\n";
-        }
-
-        if (!gameOverBuffer.loadFromFile("src/assets/Sound/gameOver.wav")) {
-            std::cerr << "Erreur lors du chargement du son d'explosion'.\n";
-        }
-
-        if (!backgroundMusic.openFromFile("src/assets/Sound/fond.wav")) {
-            std::cerr << "Erreur lors du chargement de la musique de fond.\n";
-        }
-
-        if (!explosionTexture.loadFromFile("src/assets/explosion.png")) {
-            std::cerr << "Erreur lors du chargement de la texture d'explosion.\n";
-        }
+        if (!bonusLifeTexture->loadFromFile("src/assets/life_2.png")) { cerr << "Erreur lors du chargement de la texture du bonus life.\n"; }
+        if (!bonusSpeedTexture->loadFromFile("src/assets/speed.png")) { cerr << "Erreur lors du chargement de la texture du bonus de speed.\n"; }
+        if (!bonusBulletTexture->loadFromFile("src/assets/bullet.png")) { cerr << "Erreur lors du chargement de la texture du bonus bullet.\n"; }
+        if (!projectileTexture->loadFromFile("src/assets/projectile.png")) { cerr << "Erreur lors du chargement de la texture du projectile.\n"; }
+        if (!lifeTexture.loadFromFile("src/assets/life_2.png")) { cerr << "Erreur lors du chargement de la texture du coeur.\n"; }
+        if (!speedTexture.loadFromFile("src/assets/speed.png")) { cerr << "Erreur lors du chargement de la texture du coeur.\n"; }
+        if (!bulletTexture.loadFromFile("src/assets/bullet.png")) { cerr << "Erreur lors du chargement de la texture du coeur.\n"; }
+        if (!enemyTexture->loadFromFile("src/assets/enemy.png")) { cerr << "Erreur lors du chargement de la texture de l'ennemi.\n"; }
+        if (!font.loadFromFile("src/assets/Font/txt.ttf")) { cerr << "Erreur lors du chargement de la police.\n"; }
+        if (!handCursor.loadFromSystem(sf::Cursor::Hand)) { cerr << "Erreur lors du chargement du curseur de la main.\n"; }
+        if (!defaultCursor.loadFromSystem(sf::Cursor::Arrow)) { cerr << "Erreur lors du chargement du curseur par défaut.\n"; }
+        if (!shootBuffer.loadFromFile("src/assets/Sound/laser.wav")) { cerr << "Erreur lors du chargement du son de tir.\n"; }
+        if (!explosionBuffer.loadFromFile("src/assets/Sound/explosion.wav")) { cerr << "Erreur lors du chargement du son d'explosion'.\n"; }
+        if (!gameOverBuffer.loadFromFile("src/assets/Sound/gameOver.wav")) { cerr << "Erreur lors du chargement du son d'explosion'.\n"; }
+        if (!backgroundMusic.openFromFile("src/assets/Sound/fond.wav")) { cerr << "Erreur lors du chargement de la musique de fond.\n"; }
+        if (!explosionTexture.loadFromFile("src/assets/explosion.png")) { cerr << "Erreur lors du chargement de la texture d'explosion.\n"; }
     }
 
     void resetGame() {
-
         player = std::make_unique<Player>(3);
-
         projectiles.clear();
         enemies.clear();
         bonuses.clear();
-
         shootClock.restart();
         enemySpawnClock.restart();
-
-        // Remettre le jeu en mode "non-pausé"
         isPaused = false;
+    }
+
+    static void initText(auto &text, auto textString, auto &font, auto textSize, auto vector, auto isCenter){
+        text.setString(textString);
+        text.setFont(font);
+        text.setCharacterSize(textSize);
+        text.setFillColor(Color::White);
+        if (!isCenter){
+            text.setPosition(vector);
+        } else{
+            text.setPosition((1920 - text.getGlobalBounds().getSize().x)/2,vector.y);
+        }
+
     }
 
     void showMenu() {
 
-        Text textNameGame("Invasion", font, 300);
-        textNameGame.setFillColor(Color::White);
-        textNameGame.setPosition(500, 50);
-
-        Text playButton("Jouer", font, 50);
-        playButton.setFillColor(Color::White);
-        playButton.setPosition(860, 500);  // Centrer le texte dans la fenêtre
-
-        Text closeButton("Quitter", font, 50);
-        closeButton.setFillColor(Color::White);
-        closeButton.setPosition(860, 600);
+        initText(textNameGame,"Invasion",font,300,Vector2f{0,50}, true);
+        initText(playButton,"Jouer",font,50,Vector2f{0,500},true);
+        initText(closeButton,"Quitter",font,50,Vector2f{0,600},true);
 
         while (window.isOpen()) {
             Event event;
@@ -322,21 +218,10 @@ private:
 
     void showGameOver() {
 
-        Text replayButton("Rejouer", font, 50);
-        replayButton.setFillColor(Color::White);
-        replayButton.setPosition(860, 500);
-
-        Text closeButton("Quitter", font, 50);
-        closeButton.setFillColor(Color::White);
-        closeButton.setPosition(860, 600);
-
-        Text textGameOver("Game Over", font, 300);
-        textGameOver.setFillColor(Color::White);
-        textGameOver.setPosition(400, 50);
-
-        Text textScore(format("Score : {}", player->getScore()), font, 100);
-        textScore.setFillColor(Color::White);
-        textScore.setPosition(750, 350);
+        initText(textGameOver,"Game Over",font,300,Vector2f{0,50},true);
+        initText(textScore,format("Score : {}", player->getScore()),font,100,Vector2f{0,350},true);
+        initText(replayButton,"Rejouer",font,50,Vector2f{0,500},true);
+        initText(closeButton,"Quitter",font,50,Vector2f{0,600},true);
 
         gameOverSound.play();
 
@@ -394,14 +279,9 @@ private:
     void processEvents() {
         Event event;
         while (window.pollEvent(event)) {
-            if (event.type == Event::Closed) {
-                window.close();
-            }
 
-            if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape) {
-                isPaused = !isPaused;
-            }
-
+            if (event.type == Event::Closed) { window.close(); }
+            if (event.type == Event::KeyReleased && event.key.code == Keyboard::Escape) { isPaused = !isPaused; }
             if (isPaused) {
                 const auto mousePos = Mouse::getPosition(window);
 
@@ -425,12 +305,11 @@ private:
 
     void update(float deltaTime) {
         player->update(deltaTime);
-        scoreText.setString(format("Score : {}", player->getScore()));
+        explosion.update(deltaTime);
 
+        scoreText.setString(format("Score : {}", player->getScore()));
         speedBonusText.setString(format("{}", static_cast<Int32>(player->getSpeedBoostTimer())));
         bulletBonusText.setString(format("{}", static_cast<Int32>(player->getBulletBoostTimer())));
-
-        explosion.update(deltaTime);
 
         for (auto itBonus = bonuses.begin(); itBonus != bonuses.end();) {
             (*itBonus)->update(deltaTime);
@@ -451,9 +330,7 @@ private:
             }
         }
 
-        for (auto& proj : projectiles) {
-            proj.update(deltaTime);
-        }
+        for (auto& proj : projectiles) { proj.update(deltaTime); }
 
         if (enemySpawnClock.getElapsedTime().asSeconds() >= spawnInterval) {
             spawnEnemies(rand() % 3 + 1);
@@ -461,33 +338,27 @@ private:
         }
 
         projectiles.erase(
-            remove_if(projectiles.begin(), projectiles.end(),
-                      [](const Projectile& proj) {
-                          return proj.sprite.getPosition().y < 0;
-                      }),
+            remove_if(projectiles.begin(), projectiles.end(),[](const Projectile& proj) {
+                return proj.sprite.getPosition().y < 0;
+            }),
             projectiles.end()
         );
 
-        for (auto it = enemies.begin(); it != enemies.end(); ) {
-            it->update(deltaTime);
+        for (auto itEnemy = enemies.begin(); itEnemy != enemies.end(); ) {
+            itEnemy->update(deltaTime);
 
-            if (it->sprite.getPosition().y > window.getSize().y ||
-                it->sprite.getPosition().x < 0 ||
-                it->sprite.getPosition().x > window.getSize().x) {
-
+            if (itEnemy->sprite.getPosition().y > window.getSize().y || itEnemy->sprite.getPosition().x < 0 || itEnemy->sprite.getPosition().x > window.getSize().x) {
                 player->loseLife();
-
-                it = enemies.erase(it);
-
+                itEnemy = enemies.erase(itEnemy);
             } else {
-                ++it;
+                ++itEnemy;
             }
         }
 
-        for (auto it = projectiles.begin(); it != projectiles.end(); ) {
+        for (auto itProj = projectiles.begin(); itProj != projectiles.end(); ) {
             bool hit = false;
             for (auto et = enemies.begin(); et != enemies.end(); ) {
-                if (it->sprite.getGlobalBounds().intersects(et->sprite.getGlobalBounds())) {
+                if (itProj->sprite.getGlobalBounds().intersects(et->sprite.getGlobalBounds())) {
                     explosionSound.play();
                     explosions.emplace_back(explosionTexture, 64, 64, 8, 0.1f);
                     explosions.back().sprite.setPosition(et->sprite.getPosition());
@@ -514,7 +385,7 @@ private:
                         }
                     }
 
-                    it = projectiles.erase(it);
+                    itProj = projectiles.erase(itProj);
                     et = enemies.erase(et);
                     hit = true;
                     player->addScore(100);
@@ -524,16 +395,16 @@ private:
                 }
             }
             if (!hit) {
-                ++it;
+                ++itProj;
             }
         }
 
-        for (auto it = explosions.begin(); it != explosions.end(); ) {
-            it->update(deltaTime);
-            if (it->isFinished) {
-                it = explosions.erase(it);
+        for (auto itExplo = explosions.begin(); itExplo != explosions.end(); ) {
+            itExplo->update(deltaTime);
+            if (itExplo->isFinished) {
+                itExplo = explosions.erase(itExplo);
             } else {
-                ++it;
+                ++itExplo;
             }
         }
     }
@@ -541,11 +412,11 @@ private:
     void render() {
         window.setMouseCursor(defaultCursor);
         window.clear();
+
         window.draw(backgroundSprite);
         window.draw(player->getSprite());
 
         for (auto &bonus : bonuses) { bonus->draw(window); }
-
         for (const auto& proj : projectiles) { window.draw(proj.sprite); }
         for (const auto& enemy : enemies) { window.draw(enemy.sprite); }
 
@@ -561,14 +432,12 @@ private:
 
         window.draw(scoreText);
 
-        if (player->getSpeedBoostTimer() > 0)
-        {
+        if (player->getSpeedBoostTimer() > 0) {
             window.draw(speedSprite);
             window.draw(speedBonusText);
         }
 
-        if (player->getBulletBoostTimer() > 0)
-        {
+        if (player->getBulletBoostTimer() > 0) {
             window.draw(bulletSprite);
             window.draw(bulletBonusText);
         }
