@@ -14,9 +14,12 @@ export module BulletBonus;
 export class BulletBonus : public Bonus {
 
 public:
-    BulletBonus(const shared_ptr<Texture> texture) : Bonus(texture) {}
+    BulletBonus(const shared_ptr<Texture> texture) : Bonus(texture)
+    {
+        sprite.setScale(0.30f,0.30f);
+    }
 
     void applyEffect(Player& player) override {
-        player.addLives(1);
+        player.activateBulletBoost(10, 0.25f);
     }
 };

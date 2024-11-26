@@ -8,7 +8,8 @@ using namespace std;
 
 export module Player;
 
-export class Player {
+export class Player
+{
 public:
     explicit Player(auto lives):lives{lives} {
         if (!texture.loadFromFile("src/assets/player.png")) {
@@ -41,6 +42,13 @@ public:
     auto getScore() { return score; }
     auto setScore(auto const score) { this->score = score; }
 
+    auto getShootInterval() { return shootInterval; }
+    auto setShootInterval(auto const shootInterval) { this->shootInterval = shootInterval; }
+
+    auto getSpeedBoostTimer() { return speedBoostTimer; }
+
+    auto getBulletBoostTimer() { return bulletBoostTimer; }
+
     void update(float const deltaTime) {
         if (Keyboard::isKeyPressed(Keyboard::Left) && sprite.getPosition().x > 0)
             sprite.move(-speed * deltaTime, 0);
@@ -62,6 +70,20 @@ public:
             } else {
                 isBlinking = false;
                 sprite.setColor(Color(255, 255, 255, 255));
+            }
+        }
+
+        if (speedBoostTimer > 0.0f) {
+            speedBoostTimer -= deltaTime;
+            if (speedBoostTimer <= 0.0f) {
+                setSpeed(400);
+            }
+        }
+
+        if (bulletBoostTimer > 0.0f) {
+            bulletBoostTimer -= deltaTime;
+            if (bulletBoostTimer <= 0.0f) {
+                setShootInterval(0.5f);
             }
         }
     }
@@ -93,19 +115,30 @@ public:
     }
 
     auto haveSpeedBonus() {
-        if(speed > 400)
-        {
+        if(speed > 400) {
             return true;
-        } else
-        {
+        } else {
             return false;
         }
     }
 
-    // auto haveBulletBonus() const{
-    //     if(fireRate != ...)
-    //         return true;
-    // }
+    auto haveBulletBonus() {
+        if(shootInterval > 0.5f) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    void activateSpeedBoost(float boostDuration, float speedAmount) {
+        speedBoostTimer = boostDuration;
+        speed = speedAmount;
+    }
+
+    void activateBulletBoost(float boostDuration, float shootInterval) {
+        bulletBoostTimer = boostDuration;
+        this->shootInterval = shootInterval;
+    }
 
 private:
     Sprite sprite;
@@ -113,11 +146,14 @@ private:
     float speed{400.0f};
     int lives{3};
     int score{0};
+    float speedBoostTimer{0};
+    float bulletBoostTimer{0};
+    float shootInterval{0.5f};
 
     bool isBlinking = false;
     Clock blinkClock;
-    float blinkDuration = 1.0f;
-    float blinkInterval = 0.1f;
+    float blinkDuration{1.0f};
+    float blinkInterval{0.1f};
     SoundBuffer lifeLostBuffer;
     Sound lifeLostSound;
 };

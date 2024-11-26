@@ -13,7 +13,10 @@ export module LifeBonus;
 
 export class LifeBonus : public Bonus {
 public:
-    LifeBonus(const  shared_ptr<Texture> texture) : Bonus(texture) {}
+    LifeBonus(const  shared_ptr<Texture> texture) : Bonus(texture)
+    {
+        sprite.setScale(2.5f,2.5f);
+    }
 
     void applyEffect(Player& player) override {
         player.addLives(1);

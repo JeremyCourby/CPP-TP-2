@@ -27,7 +27,7 @@ public:
         loadTexture();
 
         shootSound.setBuffer(shootBuffer);
-        shootSound.setVolume(50);
+        shootSound.setVolume(30);
 
         explosionSound.setBuffer(explosionBuffer);
         explosionSound.setVolume(50);
@@ -50,6 +50,19 @@ public:
 
         scoreText.setFillColor(Color::White);
         scoreText.setPosition(20, 50);
+
+        speedBonusText.setFillColor(Color::White);
+        speedBonusText.setPosition(1820, 10);
+        bulletBonusText.setFillColor(Color::White);
+        bulletBonusText.setPosition(1820, 40);
+
+        speedSprite.setTexture(speedTexture);
+        speedSprite.setPosition(1768, 25);
+        speedSprite.scale(1.5f, 1.5f);
+
+        bulletSprite.setTexture(bulletTexture);
+        bulletSprite.setPosition(1768,50);
+        bulletSprite.scale(0.5f, 0.5f);
     }
 
     void run() {
@@ -83,7 +96,6 @@ private:
     vector<Enemy> enemies;
 
     Clock shootClock;
-    float shootInterval = 0.4f;
     shared_ptr<Texture> projectileTexture;
 
     Clock enemySpawnClock;
@@ -91,6 +103,10 @@ private:
     shared_ptr<Texture> enemyTexture;
 
     Texture lifeTexture;
+    Texture speedTexture;
+    Sprite speedSprite;
+    Texture bulletTexture;
+    Sprite bulletSprite;
 
     shared_ptr<Texture> bonusLifeTexture;
     shared_ptr<Texture> bonusSpeedTexture;
@@ -112,6 +128,9 @@ private:
 
     Text scoreText{"Score : ", font, 50};
 
+    Text speedBonusText{"", font, 50};
+    Text bulletBonusText{"", font, 50};
+
     SoundBuffer shootBuffer;
     Sound shootSound;
 
@@ -128,9 +147,7 @@ private:
 
     vector<Explosion> explosions;
 
-    //vector<Bonus> bonuses;
     vector<unique_ptr<Bonus>> bonuses;
-    Clock bonusClock;
 
     void loadTexture()
     {
@@ -158,6 +175,14 @@ private:
         }
 
         if (!lifeTexture.loadFromFile("src/assets/life_2.png")) {
+            cerr << "Erreur lors du chargement de la texture du coeur.\n";
+        }
+
+        if (!speedTexture.loadFromFile("src/assets/speed.png")) {
+            cerr << "Erreur lors du chargement de la texture du coeur.\n";
+        }
+
+        if (!bulletTexture.loadFromFile("src/assets/bullet.png")) {
             cerr << "Erreur lors du chargement de la texture du coeur.\n";
         }
 
@@ -209,7 +234,6 @@ private:
 
         shootClock.restart();
         enemySpawnClock.restart();
-        bonusClock.restart();
 
         // Remettre le jeu en mode "non-pausé"
         isPaused = false;
@@ -403,14 +427,15 @@ private:
         player->update(deltaTime);
         scoreText.setString(format("Score : {}", player->getScore()));
 
+        speedBonusText.setString(format("{}", static_cast<Int32>(player->getSpeedBoostTimer())));
+        bulletBonusText.setString(format("{}", static_cast<Int32>(player->getBulletBoostTimer())));
+
         explosion.update(deltaTime);
 
         for (auto itBonus = bonuses.begin(); itBonus != bonuses.end();) {
             (*itBonus)->update(deltaTime);
-
             if ((*itBonus)->getIsActive() && (*itBonus)->getSprite().getGlobalBounds().intersects(player->getSprite().getGlobalBounds())) {
                 (*itBonus)->applyEffect(*player);
-
                 (*itBonus)->setIsActive(false);
                 itBonus = bonuses.erase(itBonus);
             } else {
@@ -418,10 +443,8 @@ private:
             }
         }
 
-
-
         if (!isPaused) {
-            if (Keyboard::isKeyPressed(Keyboard::Space) && shootClock.getElapsedTime().asSeconds() >= shootInterval) {
+            if (Keyboard::isKeyPressed(Keyboard::Space) && shootClock.getElapsedTime().asSeconds() >= player->getShootInterval()) {
                 projectiles.emplace_back(projectileTexture, player->getSprite().getPosition().x + player->getSprite().getGlobalBounds().width / 2, player->getSprite().getPosition().y);
                 shootSound.play();
                 shootClock.restart();
@@ -461,8 +484,6 @@ private:
             }
         }
 
-
-
         for (auto it = projectiles.begin(); it != projectiles.end(); ) {
             bool hit = false;
             for (auto et = enemies.begin(); et != enemies.end(); ) {
@@ -479,16 +500,16 @@ private:
                         if (bonusType == 0 && player->getLives() < 5) {
                             // Bonus de vie
                             newBonus = std::make_unique<LifeBonus>(bonusLifeTexture);
-                        } else if (bonusType == 1 && !player->haveSpeedBonus()) {
+                        } else if (bonusType == 1 && player->getSpeedBoostTimer() <= 0) {
                             // Bonus de vitesse
                             newBonus = std::make_unique<SpeedBonus>(bonusSpeedTexture);
-                        } else if (bonusType == 2 && !player->haveSpeedBonus()) {
+                        } else if (bonusType == 2 && player->getBulletBoostTimer() <= 0) {
                             // Bonus de vitesse de tir
                             newBonus = std::make_unique<BulletBonus>(bonusBulletTexture);
                         }
 
                         if (newBonus) {
-                            newBonus->spawn(et->sprite.getPosition(), 3.0f); // Apparition avec une durée limitée
+                            newBonus->spawn(et->sprite.getPosition());
                             bonuses.push_back(std::move(newBonus));
                         }
                     }
@@ -515,17 +536,11 @@ private:
                 ++it;
             }
         }
-
-        for (auto& bonus : bonuses) {
-            bonus->updateBonus(*player);
-        }
     }
 
     void render() {
         window.setMouseCursor(defaultCursor);
-
         window.clear();
-
         window.draw(backgroundSprite);
         window.draw(player->getSprite());
 
@@ -545,6 +560,18 @@ private:
         for (const auto& explosion : explosions) { window.draw(explosion.sprite); }
 
         window.draw(scoreText);
+
+        if (player->getSpeedBoostTimer() > 0)
+        {
+            window.draw(speedSprite);
+            window.draw(speedBonusText);
+        }
+
+        if (player->getBulletBoostTimer() > 0)
+        {
+            window.draw(bulletSprite);
+            window.draw(bulletBonusText);
+        }
 
         if (isPaused) { showPause(); }
 

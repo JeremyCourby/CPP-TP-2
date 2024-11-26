@@ -14,30 +14,12 @@ export module SpeedBonus;
 export class SpeedBonus : public Bonus {
 
 public:
-    SpeedBonus(const shared_ptr<Texture> texture) : Bonus(texture) {}
+    SpeedBonus(const shared_ptr<Texture> texture) : Bonus(texture)
+    {
+        sprite.setScale(1.5f,1.5f);
+    }
 
     void applyEffect(Player& player) override {
-        cout << player.haveSpeedBonus();
-        if (!player.haveSpeedBonus()) {
-            speedBonusDuration = 10.0f;
-            player.setSpeed(600);
-            speedBonusClock.restart();
-        }
+        player.activateSpeedBoost(10, 600);
     }
-
-    void updateBonus(Player& player) override {
-        cout << player.haveSpeedBonus();
-        if (player.haveSpeedBonus()) {
-
-            float elapsed = speedBonusClock.getElapsedTime().asSeconds();
-
-            if (elapsed >= speedBonusDuration) {
-                player.setSpeed(400);
-            }
-        }
-    }
-
-private:
-    float speedBonusDuration{0.0f};
-    Clock speedBonusClock;
 };

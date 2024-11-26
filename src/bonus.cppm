@@ -24,6 +24,7 @@ public:
     virtual ~Bonus() = default;
 
     virtual void applyEffect(Player& player) = 0;
+
     void update(float deltaTime) {
         if (isActive) {
             sprite.move(0, speed * deltaTime);
@@ -33,12 +34,9 @@ public:
         }
     }
 
-    virtual void updateBonus(Player& player){};
-
-    virtual void spawn(const sf::Vector2f& position, float duration) {
+    virtual void spawn(const sf::Vector2f& position) {
         sprite.setPosition(position);
         isActive = true;
-        // Ajoutez une logique pour la durée (si nécessaire, via un timer)
     }
 
     const sf::Sprite& getSprite() const { return sprite; }
