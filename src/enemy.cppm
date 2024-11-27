@@ -13,7 +13,7 @@ public:
     shared_ptr<Texture> texture;
     float speed = 50.0f;
 
-    Enemy(shared_ptr<Texture> sharedTexture, auto startX, auto startY, auto scale = 4.0f, auto speed = 50.0f): texture(sharedTexture), speed(speed) {
+    Enemy(shared_ptr<Texture> &sharedTexture, auto startX, auto startY, auto scale = 4.0f, auto speed = 50.0f): texture(sharedTexture), speed(speed) {
         sprite.setTexture(*texture);
         sprite.setPosition(startX, startY);
         sprite.scale(scale, scale);

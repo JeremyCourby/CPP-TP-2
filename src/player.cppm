@@ -11,18 +11,11 @@ export module Player;
 export class Player
 {
 public:
-    explicit Player(auto lives):lives{lives} {
-        if (!texture.loadFromFile("src/assets/player.png")) {
-            cerr << "Erreur lors du chargement de la texture du vaisseau.\n";
-        }
-
-        sprite.setTexture(texture);
+    explicit Player(auto lives, shared_ptr<Texture> &sharedTexture, auto lifeLostBuffer):lives{lives}, texture(sharedTexture) {
+        sprite.setTexture(*texture);
         sprite.setPosition((1920 - sprite.getGlobalBounds().width) / 2, 900);
         sprite.scale(4.0f, 4.0f);
 
-        if (!lifeLostBuffer.loadFromFile("src/assets/Sound/lifeLost.wav")) {
-            std::cerr << "Erreur lors du chargement du son d'explosion'.\n";
-        }
         lifeLostSound.setBuffer(lifeLostBuffer);
         lifeLostSound.setVolume(50);
     }
@@ -126,7 +119,7 @@ public:
 
 private:
     Sprite sprite;
-    Texture texture;
+    shared_ptr<Texture> texture;
     float speed{400.0f};
     int lives{3};
     int score{0};

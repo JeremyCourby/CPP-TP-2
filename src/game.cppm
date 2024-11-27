@@ -20,7 +20,7 @@ using namespace std;
 export class Game {
 public:
 
-    Game() : window(VideoMode(1920, 1080), "Invasion", Style::Fullscreen), projectileTexture{make_shared<Texture>()}, enemyTexture{make_shared<Texture>()}, bonusLifeTexture{make_unique<Texture>()}, bonusSpeedTexture{make_unique<Texture>()}, bonusBulletTexture{make_unique<Texture>()} {
+    Game() : window(VideoMode(1920, 1080), "Invasion", Style::Fullscreen), playerTexture{make_shared<Texture>()}, projectileTexture{make_shared<Texture>()}, enemyTexture{make_shared<Texture>()}, bonusLifeTexture{make_unique<Texture>()}, bonusSpeedTexture{make_unique<Texture>()}, bonusBulletTexture{make_unique<Texture>()} {
         window.setFramerateLimit(144);
 
         loadTexture();
@@ -38,13 +38,6 @@ public:
         backgroundMusic.setVolume(50);
         backgroundMusic.play();
 
-        initText(pauseText,"Pause",font,300,Vector2f{0,100},true);
-        initText(resumeButton,"Reprendre",font,50,Vector2f{0,500},true);
-        initText(closeButton,"Quitter",font,50,Vector2f{0,600},true);
-        initText(scoreText,"Score : ",font,50,Vector2f{20,50},false);
-        initText(speedBonusText,"",font,50,Vector2f{1870,10},false);
-        initText(bulletBonusText,"",font,50,Vector2f{1870,60},false);
-
         speedSprite.setTexture(speedTexture);
         speedSprite.setPosition(1818, 25);
         speedSprite.scale(1.5f, 1.5f);
@@ -53,6 +46,14 @@ public:
         bulletSprite.setPosition(1818,93);
         bulletSprite.scale(0.25f, 0.25f);
 
+        initText(pauseText,"Pause",font,300,Vector2f{0,100},true);
+        initText(resumeButton,"Reprendre",font,50,Vector2f{0,500},true);
+        initText(closeButton,"Quitter",font,50,Vector2f{0,600},true);
+        initText(scoreText,"Score : ",font,50,Vector2f{20,50},false);
+        initText(speedBonusText,"",font,50,Vector2f{1870,10},false);
+        initText(bulletBonusText,"",font,50,Vector2f{1870,60},false);
+
+        player = make_unique<Player>(3,playerTexture,lifeLostBuffer);
     }
 
     void run() {
@@ -74,17 +75,17 @@ public:
 private:
 
     RenderWindow window;
-    unique_ptr<Player> player = make_unique<Player>(3);
+    unique_ptr<Player> player;
     vector<Projectile> projectiles;
     vector<Enemy> enemies;
     Clock shootClock, enemySpawnClock;
-    shared_ptr<Texture> projectileTexture, enemyTexture, bonusLifeTexture, bonusSpeedTexture, bonusBulletTexture;
+    shared_ptr<Texture> playerTexture, projectileTexture, enemyTexture, bonusLifeTexture, bonusSpeedTexture, bonusBulletTexture;
     Texture lifeTexture, speedTexture, bulletTexture, backgroundTexture, explosionTexture;
     Sprite speedSprite, bulletSprite, backgroundSprite;
     Font font;
     Cursor handCursor, defaultCursor;
     Text pauseText, resumeButton, closeButton,scoreText, speedBonusText, bulletBonusText, textNameGame, playButton,replayButton,textGameOver,textScore;
-    SoundBuffer shootBuffer, explosionBuffer, gameOverBuffer;
+    SoundBuffer lifeLostBuffer, shootBuffer, explosionBuffer, gameOverBuffer;
     Sound shootSound, explosionSound, gameOverSound;
     Music backgroundMusic;
     Explosion explosion{explosionTexture, 64, 64, 8, 0.1f};
@@ -102,6 +103,8 @@ private:
             backgroundSprite.setPosition(0, 0);
         }
 
+        if (!playerTexture->loadFromFile("src/assets/player.png")) { cerr << "Erreur lors du chargement de la texture du vaisseau.\n"; }
+        if (!lifeLostBuffer.loadFromFile("src/assets/Sound/lifeLost.wav")) { cerr << "Erreur lors du chargement du son de perte de vie'.\n"; }
         if (!bonusLifeTexture->loadFromFile("src/assets/life_2.png")) { cerr << "Erreur lors du chargement de la texture du bonus life.\n"; }
         if (!bonusSpeedTexture->loadFromFile("src/assets/speed.png")) { cerr << "Erreur lors du chargement de la texture du bonus de speed.\n"; }
         if (!bonusBulletTexture->loadFromFile("src/assets/bullet.png")) { cerr << "Erreur lors du chargement de la texture du bonus bullet.\n"; }
@@ -121,7 +124,7 @@ private:
     }
 
     void resetGame() {
-        player = std::make_unique<Player>(3);
+        player = make_unique<Player>(3,playerTexture,lifeLostBuffer);
         projectiles.clear();
         enemies.clear();
         bonuses.clear();
@@ -364,7 +367,7 @@ private:
                     explosions.back().sprite.setPosition(et->sprite.getPosition());
                     explosions.back().sprite.setScale(et->sprite.getScale());
 
-                    if (rand() % 100 < 100) {
+                    if (rand() % 100 < 5) {
                         std::unique_ptr<Bonus> newBonus;
 
                         int bonusType = rand() % 3; // 0 pour LifeBonus, 1 pour SpeedBonus, 2 pour BulletBonus
