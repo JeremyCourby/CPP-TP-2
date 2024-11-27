@@ -47,9 +47,9 @@ public:
             sprite.move(-speed * deltaTime, 0);
         if (Keyboard::isKeyPressed(Keyboard::Right) && sprite.getPosition().x < 1920 - sprite.getGlobalBounds().width)
             sprite.move(speed * deltaTime, 0);
-        if (Keyboard::isKeyPressed(Keyboard::Q) && sprite.getPosition().x > 0)
+        if (Keyboard::isKeyPressed(Keyboard::Q) && !Keyboard::isKeyPressed(Keyboard::Left) && sprite.getPosition().x > 0)
             sprite.move(-speed * deltaTime, 0);
-        if (Keyboard::isKeyPressed(Keyboard::D) && sprite.getPosition().x < 1920 - sprite.getGlobalBounds().width)
+        if (Keyboard::isKeyPressed(Keyboard::D) && !Keyboard::isKeyPressed(Keyboard::Right) && sprite.getPosition().x < 1920 - sprite.getGlobalBounds().width)
             sprite.move(speed * deltaTime, 0);
 
         if (isBlinking) {

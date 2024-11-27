@@ -46,12 +46,18 @@ public:
         bulletSprite.setPosition(1818,93);
         bulletSprite.scale(0.25f, 0.25f);
 
+        inputSprite.setTexture(inputTexture);
+        inputSprite.setPosition(1500,900);
+        inputSprite.setScale(3.0f,3.0f);
+
         initText(pauseText,"Pause",font,300,Vector2f{0,100},true);
         initText(resumeButton,"Reprendre",font,50,Vector2f{0,500},true);
         initText(closeButton,"Quitter",font,50,Vector2f{0,600},true);
         initText(scoreText,"Score : ",font,50,Vector2f{20,50},false);
         initText(speedBonusText,"",font,50,Vector2f{1870,10},false);
         initText(bulletBonusText,"",font,50,Vector2f{1870,60},false);
+        initText(textMoove,"Mouvements",font,50,Vector2f{1650,905},false);
+        initText(textShoot,"Tirer",font,50,Vector2f{1650,970},false);
 
         player = make_unique<Player>(3,playerTexture,lifeLostBuffer);
     }
@@ -80,11 +86,11 @@ private:
     vector<Enemy> enemies;
     Clock shootClock, enemySpawnClock;
     shared_ptr<Texture> playerTexture, projectileTexture, enemyTexture, bonusLifeTexture, bonusSpeedTexture, bonusBulletTexture;
-    Texture lifeTexture, speedTexture, bulletTexture, backgroundTexture, explosionTexture;
-    Sprite speedSprite, bulletSprite, backgroundSprite;
+    Texture lifeTexture, speedTexture, bulletTexture, backgroundTexture, explosionTexture, inputTexture;
+    Sprite speedSprite, bulletSprite, backgroundSprite, inputSprite;
     Font font;
     Cursor handCursor, defaultCursor;
-    Text pauseText, resumeButton, closeButton,scoreText, speedBonusText, bulletBonusText, textNameGame, playButton,replayButton,textGameOver,textScore;
+    Text pauseText, resumeButton, closeButton,scoreText, speedBonusText, bulletBonusText, textNameGame, playButton,replayButton,textGameOver,textScore, textMoove, textShoot;
     SoundBuffer lifeLostBuffer, shootBuffer, explosionBuffer, gameOverBuffer;
     Sound shootSound, explosionSound, gameOverSound;
     Music backgroundMusic;
@@ -93,6 +99,7 @@ private:
     vector<unique_ptr<Bonus>> bonuses;
     float spawnInterval = 2.0f;
     bool isPaused{false};
+    int enemyMinSpeed{50}, enemyMaxSpeed{50}, chanceDropBonus{5};
 
     void loadTexture()
     {
@@ -114,17 +121,21 @@ private:
         if (!bulletTexture.loadFromFile("src/assets/bullet.png")) { cerr << "Erreur lors du chargement de la texture du coeur.\n"; }
         if (!enemyTexture->loadFromFile("src/assets/enemy.png")) { cerr << "Erreur lors du chargement de la texture de l'ennemi.\n"; }
         if (!font.loadFromFile("src/assets/Font/txt.ttf")) { cerr << "Erreur lors du chargement de la police.\n"; }
-        if (!handCursor.loadFromSystem(sf::Cursor::Hand)) { cerr << "Erreur lors du chargement du curseur de la main.\n"; }
-        if (!defaultCursor.loadFromSystem(sf::Cursor::Arrow)) { cerr << "Erreur lors du chargement du curseur par défaut.\n"; }
+        if (!handCursor.loadFromSystem(Cursor::Hand)) { cerr << "Erreur lors du chargement du curseur de la main.\n"; }
+        if (!defaultCursor.loadFromSystem(Cursor::Arrow)) { cerr << "Erreur lors du chargement du curseur par défaut.\n"; }
         if (!shootBuffer.loadFromFile("src/assets/Sound/laser.wav")) { cerr << "Erreur lors du chargement du son de tir.\n"; }
         if (!explosionBuffer.loadFromFile("src/assets/Sound/explosion.wav")) { cerr << "Erreur lors du chargement du son d'explosion'.\n"; }
         if (!gameOverBuffer.loadFromFile("src/assets/Sound/gameOver.wav")) { cerr << "Erreur lors du chargement du son d'explosion'.\n"; }
         if (!backgroundMusic.openFromFile("src/assets/Sound/fond.wav")) { cerr << "Erreur lors du chargement de la musique de fond.\n"; }
         if (!explosionTexture.loadFromFile("src/assets/explosion.png")) { cerr << "Erreur lors du chargement de la texture d'explosion.\n"; }
+        if (!inputTexture.loadFromFile("src/assets/input.png")) { cerr << "Erreur lors du chargement de la texture des input.\n"; }
     }
 
     void resetGame() {
         player = make_unique<Player>(3,playerTexture,lifeLostBuffer);
+        enemyMinSpeed = 50;
+        enemyMaxSpeed = 50;
+        chanceDropBonus = 5;
         projectiles.clear();
         enemies.clear();
         bonuses.clear();
@@ -143,7 +154,6 @@ private:
         } else{
             text.setPosition((1920 - text.getGlobalBounds().getSize().x)/2,vector.y);
         }
-
     }
 
     void showMenu() {
@@ -195,6 +205,7 @@ private:
             window.draw(playButton);
             window.draw(closeButton);
             window.draw(textNameGame);
+            showInput();
             window.display();
         }
     }
@@ -217,6 +228,7 @@ private:
         window.draw(pauseText);
         window.draw(resumeButton);
         window.draw(closeButton);
+        showInput();
     }
 
     void showGameOver() {
@@ -273,9 +285,15 @@ private:
         }
     }
 
-    void spawnEnemies(int numberOfEnemies) {
+    void showInput() {
+        window.draw(textMoove);
+        window.draw(textShoot);
+        window.draw(inputSprite);
+    }
+
+    void spawnEnemies(auto numberOfEnemies) {
         for (int i = 0; i < numberOfEnemies; ++i) {
-            enemies.emplace_back(enemyTexture, rand() % (window.getSize().x - 100), -100,rand() % 4 + 2,rand() % 100 + 50);
+            enemies.emplace_back(enemyTexture, rand() % (window.getSize().x - 100), -100,rand() % 4 + 2,rand() % enemyMaxSpeed + enemyMinSpeed);
         }
     }
 
@@ -310,10 +328,12 @@ private:
         player->update(deltaTime);
         explosion.update(deltaTime);
 
+        // Text score et bonus
         scoreText.setString(format("Score : {}", player->getScore()));
         speedBonusText.setString(format("{}", static_cast<Int32>(player->getSpeedBoostTimer())));
         bulletBonusText.setString(format("{}", static_cast<Int32>(player->getBulletBoostTimer())));
 
+        // Gestion des bonus
         for (auto itBonus = bonuses.begin(); itBonus != bonuses.end();) {
             (*itBonus)->update(deltaTime);
             if ((*itBonus)->getIsActive() && (*itBonus)->getSprite().getGlobalBounds().intersects(player->getSprite().getGlobalBounds())) {
@@ -325,6 +345,7 @@ private:
             }
         }
 
+        // Gestion des projectiles
         if (!isPaused) {
             if (Keyboard::isKeyPressed(Keyboard::Space) && shootClock.getElapsedTime().asSeconds() >= player->getShootInterval()) {
                 projectiles.emplace_back(projectileTexture, player->getSprite().getPosition().x + player->getSprite().getGlobalBounds().width / 2, player->getSprite().getPosition().y);
@@ -335,17 +356,18 @@ private:
 
         for (auto& proj : projectiles) { proj.update(deltaTime); }
 
-        if (enemySpawnClock.getElapsedTime().asSeconds() >= spawnInterval) {
-            spawnEnemies(rand() % 3 + 1);
-            enemySpawnClock.restart();
-        }
-
         projectiles.erase(
             remove_if(projectiles.begin(), projectiles.end(),[](const Projectile& proj) {
                 return proj.sprite.getPosition().y < 0;
             }),
             projectiles.end()
         );
+
+        // Spawn des ennemis
+        if (enemySpawnClock.getElapsedTime().asSeconds() >= spawnInterval) {
+            spawnEnemies(rand() % 3 + 1);
+            enemySpawnClock.restart();
+        }
 
         for (auto itEnemy = enemies.begin(); itEnemy != enemies.end(); ) {
             itEnemy->update(deltaTime);
@@ -358,43 +380,48 @@ private:
             }
         }
 
+        // Gestion des colisions + drop des ennemis + animation explosion
         for (auto itProj = projectiles.begin(); itProj != projectiles.end(); ) {
             bool hit = false;
-            for (auto et = enemies.begin(); et != enemies.end(); ) {
-                if (itProj->sprite.getGlobalBounds().intersects(et->sprite.getGlobalBounds())) {
+            for (auto etEnemy = enemies.begin(); etEnemy != enemies.end(); ) {
+                if (itProj->sprite.getGlobalBounds().intersects(etEnemy->sprite.getGlobalBounds())) {
                     explosionSound.play();
                     explosions.emplace_back(explosionTexture, 64, 64, 8, 0.1f);
-                    explosions.back().sprite.setPosition(et->sprite.getPosition());
-                    explosions.back().sprite.setScale(et->sprite.getScale());
+                    explosions.back().sprite.setPosition(etEnemy->sprite.getPosition());
+                    explosions.back().sprite.setScale(etEnemy->sprite.getScale());
 
-                    if (rand() % 100 < 5) {
-                        std::unique_ptr<Bonus> newBonus;
+                    if (player->getScore() % 2000 == 0) { enemyMaxSpeed += 10; }
+                    if (player->getScore() % 5000 == 0) { chanceDropBonus += 5; }
+                    if (player->getScore() % 10000 == 0) { enemyMinSpeed += 10; }
+
+                    if (rand() % 100 < chanceDropBonus) {
+                        unique_ptr<Bonus> newBonus;
 
                         int bonusType = rand() % 3; // 0 pour LifeBonus, 1 pour SpeedBonus, 2 pour BulletBonus
                         if (bonusType == 0 && player->getLives() < 5) {
                             // Bonus de vie
-                            newBonus = std::make_unique<LifeBonus>(bonusLifeTexture);
+                            newBonus = make_unique<LifeBonus>(bonusLifeTexture);
                         } else if (bonusType == 1 && player->getSpeedBoostTimer() <= 0) {
                             // Bonus de vitesse
-                            newBonus = std::make_unique<SpeedBonus>(bonusSpeedTexture);
+                            newBonus = make_unique<SpeedBonus>(bonusSpeedTexture);
                         } else if (bonusType == 2 && player->getBulletBoostTimer() <= 0) {
                             // Bonus de vitesse de tir
-                            newBonus = std::make_unique<BulletBonus>(bonusBulletTexture);
+                            newBonus = make_unique<BulletBonus>(bonusBulletTexture);
                         }
 
                         if (newBonus) {
-                            newBonus->spawn(et->sprite.getPosition());
-                            bonuses.push_back(std::move(newBonus));
+                            newBonus->spawn(etEnemy->sprite.getPosition());
+                            bonuses.push_back(move(newBonus));
                         }
                     }
 
                     itProj = projectiles.erase(itProj);
-                    et = enemies.erase(et);
+                    etEnemy = enemies.erase(etEnemy);
                     hit = true;
                     player->addScore(100);
                     break;
                 } else {
-                    ++et;
+                    ++etEnemy;
                 }
             }
             if (!hit) {
@@ -402,6 +429,7 @@ private:
             }
         }
 
+        // Gestion des explosions
         for (auto itExplo = explosions.begin(); itExplo != explosions.end(); ) {
             itExplo->update(deltaTime);
             if (itExplo->isFinished) {
